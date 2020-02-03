@@ -1,8 +1,12 @@
 {
   "name": "deep-copy-all",
   "version": "1.0.0",
-  "description": "JavaScript deep copy arrays and objects, preserving custom methods",
+  "description": "deep copy JavaScript arrays and objects, preserving custom methods",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/terrymorse58/deep-copy-all.git"
+  },
   "scripts": {
     "testmjs": "node ./test/test-mjs.mjs > ./test/result-mjs.txt",
     "testjs": "node ./test/test-js.js > ./test/result-js.txt",
