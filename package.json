@@ -1,0 +1,19 @@
+{
+  "name": "deep-copy-all",
+  "version": "1.0.0",
+  "description": "JavaScript deep copy arrays and objects, preserving custom methods",
+  "main": "index.js",
+  "scripts": {
+    "testmjs": "node ./test/test-mjs.mjs > ./test/result-mjs.txt",
+    "testjs": "node ./test/test-js.js > ./test/result-js.txt",
+    "build": "bash build.sh"
+  },
+  "keywords": [
+    "javascript",
+    "copy",
+    "clone",
+    "deep"
+  ],
+  "author": "Terry Morse",
+  "license": "MIT"
+}
