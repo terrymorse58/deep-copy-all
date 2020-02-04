@@ -1,6 +1,6 @@
 {
   "name": "deep-copy-all",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "deep copy JavaScript arrays and objects, preserving custom methods",
   "main": "index.js",
   "repository": {
