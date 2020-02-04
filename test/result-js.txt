@@ -6,18 +6,6 @@ Test 1:
   let src = [1,2,3,[[[[[4,5]]]]]];
   let dest = deepCopy(src, true);
   dest[2] = 30000;
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
     src:  [1,2,3,[[[[[4,5]]]]]] 
     dest: [1,2,30000,[[[[[4,5]]]]]]
 
@@ -26,12 +14,6 @@ Test 2:
   let dest2 = deepCopy(src2, true);
   dest2[2].age = "secret";
   dest2[2].hobbies[0] = "cycling";
-objectType name:  array
-objectType name:  array
-objectType name:  object
-objectType name:  object
-objectType name:  array
-objectType name:  array
     src2:  ["a",42,{"name":"terry","age":"old","hobbies":["sleeping","eating"]}] 
     dest2: ["a",42,{"name":"terry","age":"secret","hobbies":["cycling","eating"]}] 
 
@@ -46,8 +28,6 @@ Test3:
   myMap.set(keyFunc, 'value associated with keyFunc');
   let dest3 = deepCopy(myMap, true);
   dest3.delete(keyFunc);
-objectType name:  map
-objectType name:  map
     myMap: Map(3) {
   'a string' => 'value associated with "a string"',
   {} => 'value associated with keyObj',
@@ -62,19 +42,6 @@ Test4:
   let src4 = {nums: [1,5,[22,[[44]]]], map: myMap};
   let dest4 = deepCopy(src4, true);
   dest4.nums[2][0] = 220000;
-
-objectType name:  object
-objectType name:  object
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  array
-objectType name:  map
-objectType name:  map
     src4: {
   nums: [ 1, 5, [ 22, [Array] ] ],
   map: Map(3) {
@@ -96,21 +63,13 @@ Test5:
   let src5 = [1, 2, new Date(), 3];
   let dest5 = deepCopy(src5, true);
   dest5[2].setMonth(7);
-objectType name:  array
-objectType name:  array
-objectType name:  date
-objectType name:  date
-    src5:  [ 1, 2, 2020-02-04T01:53:20.083Z, 3 ] 
-    dest5: [ 1, 2, 2020-08-04T00:53:20.083Z, 3 ]
+    src5:  [ 1, 2, 2020-02-04T21:40:50.773Z, 3 ] 
+    dest5: [ 1, 2, 2020-08-04T20:40:50.773Z, 3 ]
 
 Test6:
   let src6 = new Set([1,"a",2,{foo: "bar"}]);
   let dest6 = deepCopy(src6, true);
   dest6.add("new stuff");
-objectType name:  set
-objectType name:  set
-objectType name:  object
-objectType name:  object
     src6:  Set(4) { 1, 'a', 2, { foo: 'bar' } } 
     dest6: Set(5) { 1, 'a', 2, { foo: 'bar' }, 'new stuff' }
 
@@ -118,21 +77,14 @@ Test7:
   let src7 = new Date();
   let dest7 = deepCopy(src7, true);
   dest7.setMonth(7);
-objectType name:  date
-    src7:  2020-02-04T01:53:20.085Z 
-    dest7: 2020-08-04T00:53:20.085Z
+    src7:  2020-02-04T21:40:50.775Z 
+    dest7: 2020-08-04T20:40:50.775Z
 
 Test8:
   let src8 = ["maptest", new Map()];
   src8[1].set("fooFn", function foo() {console.log("this is foo")});
   let dest8 = deepCopy(src8, true);
   dest8[1].set("barStr", "this is bar");
-objectType name:  array
-objectType name:  array
-objectType name:  map
-objectType name:  map
-objectType name:  function
-objectType name:  function
     src8:  [ 'maptest', Map(1) { 'fooFn' => [Function: foo] } ] 
     dest8: [
   'maptest',
@@ -144,8 +96,6 @@ Test9:
   let src9 = {foo: "this is foo", bar: "this is bar"};
   Object.defineProperty(src9, "foo", {enumerable: false});
   let dest9 = deepCopy(src9, true);
-objectType name:  object
-objectType name:  object
     src9:  { bar: 'this is bar' } 
     dest9: { bar: 'this is bar' }
 dest9.foo descriptor: {
@@ -159,10 +109,6 @@ Test10:
   let src10 = [1,2,/abc/,"foo"];
   let dest10 = deepCopy(src10, ${DEEP});
   dest10[3] = "BAR";
-objectType name:  array
-objectType name:  array
-objectType name:  regexp
-objectType name:  regexp
     src10:  [ 1, 2, /abc/, 'foo' ] 
     dest10: [ 1, 2, /abc/, 'BAR' ]
 
@@ -170,10 +116,6 @@ Test11:
   let src11 = [ 1, 2, Int8Array.from([3, 4, 42]) ];
   let dest11 = deepCopy(src11, true);
   dest11[1] = 200000;
-objectType name:  array
-objectType name:  array
-objectType name:  int8array
-objectType name:  int8array
     src11:  [ 1, 2, Int8Array [ 3, 4, 42 ] ] 
     dest11: [ 1, 200000, Int8Array [ 3, 4, 42 ] ]
 
@@ -181,10 +123,6 @@ Test12:
   let src12 = [ 1, 2, Uint8Array.from([3, 4, 42]) ];
   let dest12 = deepCopy(src12, true);
   dest12[1] = 200000;
-objectType name:  array
-objectType name:  array
-objectType name:  uint8array
-objectType name:  uint8array
     src12:  [ 1, 2, Uint8Array [ 3, 4, 42 ] ] 
     dest12: [ 1, 200000, Uint8Array [ 3, 4, 42 ] ]
 
@@ -192,10 +130,6 @@ Test13:
   let src13 = [ 1, 2, Uint8ClampedArray.from([3, 4, 42]) ];
   let dest13 = deepCopy(src13, true);
   dest13[1] = 42424242;
-objectType name:  array
-objectType name:  array
-objectType name:  uint8clampledarray
-objectType name:  uint8clampledarray
     src13:  [ 1, 2, Uint8ClampedArray [ 3, 4, 42 ] ] 
     dest13: [ 1, 42424242, Uint8ClampedArray [ 3, 4, 42 ] ]
 
@@ -203,10 +137,6 @@ Test14:
   let src14 = [ 1, 2, Int16Array.from([3, 4, 42]) ];
   let dest14 = deepCopy(src14, true);
   dest14[1] = 16181618;
-objectType name:  array
-objectType name:  array
-objectType name:  int16array
-objectType name:  int16array
     src14:  [ 1, 2, Int16Array [ 3, 4, 42 ] ] 
     dest14: [ 1, 16181618, Int16Array [ 3, 4, 42 ] ]
 
@@ -214,10 +144,6 @@ Test15:
   let src15 = [ 1, 2, Uint16Array.from([3, 4, 42]) ];
   let dest15 = deepCopy(src15, true);
   dest15[1] = 16181618;
-objectType name:  array
-objectType name:  array
-objectType name:  uint16array
-objectType name:  uint16array
     src15:  [ 1, 2, Uint16Array [ 3, 4, 42 ] ] 
     dest15: [ 1, 16181618, Uint16Array [ 3, 4, 42 ] ]
 
@@ -225,10 +151,6 @@ Test16:
   let src16 = [ 1, 2, Int32Array.from([3, 4, 42]) ];
   let dest16 = deepCopy(src16, true);
   dest16[1] = 16181618;
-objectType name:  array
-objectType name:  array
-objectType name:  int32array
-objectType name:  int32array
     src16:  [ 1, 2, Int32Array [ 3, 4, 42 ] ] 
     dest16: [ 1, 16181618, Int32Array [ 3, 4, 42 ] ]
 
@@ -236,10 +158,6 @@ Test17:
   let src17 = [ 1, 2, Uint32Array.from([3, 4, 42]) ];
   let dest17 = deepCopy(src17, true);
   dest17[1] = 16181618;
-objectType name:  array
-objectType name:  array
-objectType name:  uint32array
-objectType name:  uint32array
     src17:  [ 1, 2, Uint32Array [ 3, 4, 42 ] ] 
     dest17: [ 1, 16181618, Uint32Array [ 3, 4, 42 ] ]
 
@@ -247,10 +165,6 @@ Test18:
   let src18 = [ 1, 2, Float32Array.from([3, 4, 42]) ];
   let dest18 = deepCopy(src18, true);
   dest18[1] = 16181618;
-objectType name:  array
-objectType name:  array
-objectType name:  float32array
-objectType name:  float32array
     src18:  [ 1, 2, Float32Array [ 3, 4, 42 ] ] 
     dest18: [ 1, 16181618, Float32Array [ 3, 4, 42 ] ]
 
@@ -258,10 +172,6 @@ Test19:
   let src19 = [ 1, 2, Float64Array.from([3, 4, 42]) ];
   let dest19 = deepCopy(src19, true);
   dest19[1] = 16181618;
-objectType name:  array
-objectType name:  array
-objectType name:  float64array
-objectType name:  float64array
     src19:  [ 1, 2, Float64Array [ 3, 4, 42 ] ] 
     dest19: [ 1, 16181618, Float64Array [ 3, 4, 42 ] ]
 
@@ -269,10 +179,6 @@ Test20:
   let src20 = [ 1, 2, BigInt64Array.from([3n, 4n, 42n]) ];
   let dest20 = deepCopy(src20, true);
   dest20[1] = 16181618;
-objectType name:  array
-objectType name:  array
-objectType name:  bigint64array
-objectType name:  bigint64array
     src20:  [ 1, 2, BigInt64Array [ 3n, 4n, 42n ] ] 
     dest20: [ 1, 16181618, BigInt64Array [ 3n, 4n, 42n ] ]
 
@@ -280,11 +186,7 @@ Test21:
   let src21 = [ 1, 2, BigUint64Array.from([3n, 4n, 42n]) ];
   let dest21 = deepCopy(src21, true);
   dest21[1] = 16181618;
-objectType name:  array
-objectType name:  array
-objectType name:  biguint64array
-objectType name:  biguint64array
     src21:  [ 1, 2, BigUint64Array [ 3n, 4n, 42n ] ] 
     dest21: [ 1, 16181618, BigUint64Array [ 3n, 4n, 42n ] ]
 
-Elapsed time: 17 milliseconds
+Elapsed time: 13 milliseconds

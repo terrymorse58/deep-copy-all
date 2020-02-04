@@ -7,7 +7,6 @@
  * @return {*}
  */
 module.exports = function deepCopy(source, goDeep = true) {
-  let dest;
 
   if (!goDeep) {
     return shallowCopy(source);
@@ -20,12 +19,11 @@ module.exports = function deepCopy(source, goDeep = true) {
   const sourceType = objectType(source);
   const mayDeepCopy = objectBehaviors[sourceType].mayDeepCopy;
   if (!mayDeepCopy) {
-    dest = objectBehaviors[sourceType].makeShallow(source);
-    return dest;
+    return objectBehaviors[sourceType].makeShallow(source);
   }
 
-  dest = objectBehaviors[sourceType].makeNew(source);
-  traverse(source, dest);
+  let dest = objectBehaviors[sourceType].makeEmpty(source);
+  copyObject(source, dest, sourceType);
   return dest;
 };
 
@@ -35,21 +33,21 @@ module.exports = function deepCopy(source, goDeep = true) {
  * @return {*}
  */
 function shallowCopy(source) {
-  const sourceType = objectType(source);
-  const makeShallow = objectBehaviors[sourceType].makeShallow;
-  return makeShallow(source);
+  return objectBehaviors[objectType(source)].makeShallow(source);
 }
 
 /**
- * traverse source object and copy to destination object
+ * copy source object to destination object
  * @param {[]|{}} srcObject
  * @param {[]|{}} destObject
+ * @param {string|null} [srcType] - type of the source object
  */
-function traverse(srcObject, destObject) {
+function copyObject(srcObject, destObject,
+                  srcType = null) {
   // TODO check for circular references
-  const srcType = objectType(srcObject);
+  srcType = srcType || objectType(srcObject);
 
-  // console.log('traverse srcType:',srcType);
+  // console.log('copyObject srcType:',srcType);
 
   if (!objectBehaviors[srcType].mayDeepCopy) {
     return;
@@ -66,55 +64,64 @@ function traverse(srcObject, destObject) {
     const elType = objectType(elValue);
     const mayDeepCopy = objectBehaviors[elType].mayDeepCopy;
     const elNew = mayDeepCopy
-      ? objectBehaviors[elType].makeNew(elValue)
+      ? objectBehaviors[elType].makeEmpty(elValue)
       : objectBehaviors[elType].makeShallow(elValue);
     addElement(destObject, elKey, elNew, elDescriptor);
-    traverse(elValue, elNew);
+    copyObject(elValue, elNew, elType);
   });
-} // establish a keyword for an object
+}
 
-// names to identify types of objects
-const typeNames = {
-  "regexp": RegExp,
-  "date": Date,
-  "function": Function,
-  "array": Array,
-  "int8array": Int8Array,
-  "uint8array": Uint8Array,
-  "uint8clampledarray": Uint8ClampedArray,
-  "map": Map,
-  "weakmap": WeakMap,
-  "set": Set,
-  "weakset": WeakSet,
-  "object": Object
-};
+// establish a "type" keyword for an object
+function objectType (obj) {
+  //console.log('    objectType obj:',obj);
+  let typeTry;
 
-function objectType(obj) {
-  if (!obj || !obj instanceof Object) {
-    return 'unknown';
+  // match primitives right away
+  if (isPrimitive(obj) || !obj instanceof Object) {
+    //console.log('      objectType type: primitive');
+    return 'primitive';
   }
+
+  // try to match object constructor name
+  const consName = obj.constructor && obj.constructor.name
+    && obj.constructor.name.toLowerCase();
+  if (typeof consName === 'string' && consName.length
+    && objectBehaviors[consName]) {
+    //console.log(`      objectType type: ${consName} (consName)`);
+    return consName;
+  }
+
+  // try to match by looping through objectBehaviors type property
   for (const name in objectBehaviors) {
-    if (obj instanceof objectBehaviors[name].type) {
-      console.log('objectType name: ',name);
+    typeTry = objectBehaviors[name].type;
+    //console.log(`      objectType trying: ${name}`);
+    if (!typeTry || obj instanceof typeTry) {
+      //console.log(`      objectType found type: ${name} (match by looping`);
       return name;
     }
   }
+
+  //console.log('      objectType NOT found type: unknown');
   return 'unknown';
 }
 
 /*
-  object behaviors
-  addElement: add a new element to the object
-  makeNew: make a new, empty object
-  makeShallow: make a shallow copy of source
-  keyVals: make array of {key,value} pairs for object elements
-  mayDeepCopy: true if object may be deep copied
+  define object behaviors
+  type - data type of the object
+  mayDeepCopy - true if object may be deep copied
+  addElement - add a new element to the object
+  makeEmpty - make a new, empty object
+  makeShallow - make a shallow copy of object
+  keyVals - make array of {key,value,descriptor} for object element
+  NOTE: The order is important - custom objects must be defined before the
+        standard JavaScript Object.
 */
 const objectBehaviors = {
   "array": {
     type: Array,
+    mayDeepCopy: true,
     addElement: (array, key, value) => Array.prototype.push.call(array, value),
-    makeNew: source => {
+    makeEmpty: source => {
       const newArray = [];
       Object.setPrototypeOf(newArray, Object.getPrototypeOf(source));
       return newArray;
@@ -133,8 +140,20 @@ const objectBehaviors = {
         });
       });
       return kvPairs;
-    },
-    mayDeepCopy: true
+    }
+  },
+  "date": {
+    type: Date,
+    makeShallow: date => new Date(date.getTime()),
+  },
+  "regexp": {
+    type: RegExp,
+    makeShallow: src => src,
+    keyVals: () => null,
+  },
+  'function': {
+    type: Function,
+    makeShallow: fn => fn,
   },
   "int8array": {
     type: Int8Array,
@@ -144,7 +163,7 @@ const objectBehaviors = {
     type: Uint8Array,
     makeShallow: source => Uint8Array.from(source),
   },
-  "uint8clampledarray": {
+  "uint8clampedarray": {
     type: Uint8ClampedArray,
     makeShallow: source => Uint8ClampedArray.from(source),
   },
@@ -180,19 +199,11 @@ const objectBehaviors = {
     type: BigUint64Array,
     makeShallow: source => BigUint64Array.from(source),
   },
-  "date": {
-    type: Date,
-    makeShallow: date => new Date(date.getTime()),
-  },
-  "regexp": {
-    type: RegExp,
-    makeShallow: src => src,
-    keyVals: () => null,
-  },
   "map": {
     type: Map,
+    mayDeepCopy: true,
     addElement: (map, key, value) => map.set(key, value),
-    makeNew: () => new Map(),
+    makeEmpty: () => new Map(),
     makeShallow: sourceMap => new Map(sourceMap),
     keyVals: map => {
       let kvPairs = [];
@@ -203,13 +214,13 @@ const objectBehaviors = {
         });
       });
       return kvPairs;
-    },
-    mayDeepCopy: true
+    }
   },
   "set": {
     type: Set,
+    mayDeepCopy: true,
     addElement: (set, key, value) => set.add(value),
-    makeNew: () => new Set(),
+    makeEmpty: () => new Set(),
     makeShallow: set => new Set(set),
     keyVals: set => {
       let kvPairs = [];
@@ -220,22 +231,18 @@ const objectBehaviors = {
         });
       });
       return kvPairs;
-    },
-    mayDeepCopy: true
-  },
-  'function': {
-    type: Function,
-    makeShallow: fn => fn,
+    }
   },
   "object": {
     type: Object,
+    mayDeepCopy: true,
     addElement: (obj, key, value, descriptor = null) => {
       Object.defineProperty(obj, key, {
         ...descriptor,
         value: value
       });
     },
-    makeNew: source => {
+    makeEmpty: source => {
       const newObj = {};
       Object.setPrototypeOf(newObj, Object.getPrototypeOf(source));
       return newObj;
@@ -262,17 +269,17 @@ const objectBehaviors = {
       });
       // console.log('"object" kvPairs:',kvPairs);
       return kvPairs;
-    },
-    mayDeepCopy: true
+    }
   },
   "unknown": {
-    makeShallow: source => source,
+    makeShallow: source => source
+  },
+  "primitive": {
+    makeShallow: source => source
   }
 };
-Object.defineProperty(objectBehaviors, "unknown", {
-  enumerable: false
-});
 
+// true if the item is a primitive data type
 function isPrimitive(item) {
   let type = typeof item;
   return type === 'number' || type === 'string' || type === 'boolean'

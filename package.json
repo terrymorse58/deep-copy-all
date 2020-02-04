@@ -1,6 +1,6 @@
 {
   "name": "deep-copy-all",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "deep copy JavaScript arrays and objects, preserving custom methods",
   "main": "index.js",
   "repository": {
@@ -18,5 +18,7 @@
     "deep"
   ],
   "author": "Terry Morse",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+  }
 }

@@ -65,11 +65,12 @@ console.log(
   '    dest3:', dest3
 );
 
+// nested array and Map
 console.log('\nTest4:');
 console.log(
   '  let src4 = {nums: [1,5,[22,[[44]]]], map: myMap};\n' +
   `  let dest4 = deepCopy(src4, ${DEEP});\n` +
-  '  dest4.nums[2][0] = 220000;\n'
+  '  dest4.nums[2][0] = 220000;'
 );
 let src4 = {nums: [1,5,[22,[[44]]]], map: myMap};
 let dest4 = deepCopy(src4, DEEP);
@@ -79,6 +80,7 @@ console.log(
   '    dest4:', dest4
 );
 
+// array containing Date
 console.log('\nTest5:');
 console.log(
   '  let src5 = [1, 2, new Date(), 3];\n' +
@@ -93,6 +95,7 @@ console.log(
   '    dest5:', dest5
 );
 
+// Set
 console.log('\nTest6:');
 console.log(
   '  let src6 = new Set([1,"a",2,{foo: "bar"}]);\n' +
