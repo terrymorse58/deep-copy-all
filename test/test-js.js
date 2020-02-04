@@ -1,4 +1,4 @@
-const deepCopy = require('../index.js').default;
+const deepCopy = require('../index.js');
 
 console.log('\ndeepCopy tests...');
 
@@ -155,6 +155,187 @@ console.log(
 );
 let d9 = Object.getOwnPropertyDescriptor(dest9,"foo");
 console.log('dest9.foo descriptor:',d9);
+
+// RegExp
+console.log('\nTest10:');
+console.log(
+  '  let src10 = [1,2,/abc/,"foo"];\n' +
+  '  let dest10 = deepCopy(src10, ${DEEP});\n' +
+  `  dest10[3] = "BAR";`
+);
+let src10 = [1,2,/abc/,"foo"];
+let dest10 = deepCopy(src10, DEEP);
+dest10[3] = "BAR";
+console.log(
+  '    src10: ', src10, '\n' +
+  '    dest10:', dest10
+);
+
+// Int8Array
+console.log('\nTest11:');
+console.log(
+  '  let src11 = [ 1, 2, Int8Array.from([3, 4, 42]) ];\n' +
+  `  let dest11 = deepCopy(src11, ${DEEP});\n` +
+  `  dest11[1] = 200000;`
+);
+let src11 = [ 1, 2, Int8Array.from([3, 4, 42]) ];
+let dest11 = deepCopy(src11, DEEP);
+dest11[1] = 200000;
+console.log(
+  '    src11: ', src11, '\n' +
+  '    dest11:', dest11
+);
+
+// Uint8Array
+console.log('\nTest12:');
+console.log(
+  '  let src12 = [ 1, 2, Uint8Array.from([3, 4, 42]) ];\n' +
+  `  let dest12 = deepCopy(src12, ${DEEP});\n` +
+  `  dest12[1] = 200000;`
+);
+let src12 = [ 1, 2, Uint8Array.from([3, 4, 42]) ];
+let dest12 = deepCopy(src12, DEEP);
+dest12[1] = 200000;
+console.log(
+  '    src12: ', src12, '\n' +
+  '    dest12:', dest12
+);
+
+// Uint8ClampedArray
+console.log('\nTest13:');
+console.log(
+  '  let src13 = [ 1, 2, Uint8ClampedArray.from([3, 4, 42]) ];\n' +
+  `  let dest13 = deepCopy(src13, ${DEEP});\n` +
+  `  dest13[1] = 42424242;`
+);
+let src13 = [ 1, 2, Uint8ClampedArray.from([3, 4, 42]) ];
+let dest13 = deepCopy(src13, DEEP);
+dest13[1] = 42424242;
+console.log(
+  '    src13: ', src13, '\n' +
+  '    dest13:', dest13
+);
+
+// Int16Array
+console.log('\nTest14:');
+console.log(
+  '  let src14 = [ 1, 2, Int16Array.from([3, 4, 42]) ];\n' +
+  `  let dest14 = deepCopy(src14, ${DEEP});\n` +
+  `  dest14[1] = 16181618;`
+);
+let src14 = [ 1, 2, Int16Array.from([3, 4, 42]) ];
+let dest14 = deepCopy(src14, DEEP);
+dest14[1] = 16181618;
+console.log(
+  '    src14: ', src14, '\n' +
+  '    dest14:', dest14
+);
+
+// Uint16Array
+console.log('\nTest15:');
+console.log(
+  '  let src15 = [ 1, 2, Uint16Array.from([3, 4, 42]) ];\n' +
+  `  let dest15 = deepCopy(src15, ${DEEP});\n` +
+  `  dest15[1] = 16181618;`
+);
+let src15 = [ 1, 2, Uint16Array.from([3, 4, 42]) ];
+let dest15 = deepCopy(src15, DEEP);
+dest15[1] = 16181618;
+console.log(
+  '    src15: ', src15, '\n' +
+  '    dest15:', dest15
+);
+
+// Int32Array
+console.log('\nTest16:');
+console.log(
+  '  let src16 = [ 1, 2, Int32Array.from([3, 4, 42]) ];\n' +
+  `  let dest16 = deepCopy(src16, ${DEEP});\n` +
+  `  dest16[1] = 16181618;`
+);
+let src16 = [ 1, 2, Int32Array.from([3, 4, 42]) ];
+let dest16 = deepCopy(src16, DEEP);
+dest16[1] = 16181618;
+console.log(
+  '    src16: ', src16, '\n' +
+  '    dest16:', dest16
+);
+
+// Uint32Array
+console.log('\nTest17:');
+console.log(
+  '  let src17 = [ 1, 2, Uint32Array.from([3, 4, 42]) ];\n' +
+  `  let dest17 = deepCopy(src17, ${DEEP});\n` +
+  `  dest17[1] = 16181618;`
+);
+let src17 = [ 1, 2, Uint32Array.from([3, 4, 42]) ];
+let dest17 = deepCopy(src17, DEEP);
+dest17[1] = 16181618;
+console.log(
+  '    src17: ', src17, '\n' +
+  '    dest17:', dest17
+);
+
+// Float32Array
+console.log('\nTest18:');
+console.log(
+  '  let src18 = [ 1, 2, Float32Array.from([3, 4, 42]) ];\n' +
+  `  let dest18 = deepCopy(src18, ${DEEP});\n` +
+  `  dest18[1] = 16181618;`
+);
+let src18 = [ 1, 2, Float32Array.from([3, 4, 42]) ];
+let dest18 = deepCopy(src18, DEEP);
+dest18[1] = 16181618;
+console.log(
+  '    src18: ', src18, '\n' +
+  '    dest18:', dest18
+);
+
+// Float64Array
+console.log('\nTest19:');
+console.log(
+  '  let src19 = [ 1, 2, Float64Array.from([3, 4, 42]) ];\n' +
+  `  let dest19 = deepCopy(src19, ${DEEP});\n` +
+  `  dest19[1] = 16181618;`
+);
+let src19 = [ 1, 2, Float64Array.from([3, 4, 42]) ];
+let dest19 = deepCopy(src19, DEEP);
+dest19[1] = 16181618;
+console.log(
+  '    src19: ', src19, '\n' +
+  '    dest19:', dest19
+);
+
+// BigInt64Array
+console.log('\nTest20:');
+console.log(
+  '  let src20 = [ 1, 2, BigInt64Array.from([3n, 4n, 42n]) ];\n' +
+  `  let dest20 = deepCopy(src20, ${DEEP});\n` +
+  `  dest20[1] = 16181618;`
+);
+let src20 = [ 1, 2, BigInt64Array.from([3n, 4n, 42n]) ];
+let dest20 = deepCopy(src20, DEEP);
+dest20[1] = 16181618;
+console.log(
+  '    src20: ', src20, '\n' +
+  '    dest20:', dest20
+);
+
+// BigUint64Array
+console.log('\nTest21:');
+console.log(
+  '  let src21 = [ 1, 2, BigUint64Array.from([3n, 4n, 42n]) ];\n' +
+  `  let dest21 = deepCopy(src21, ${DEEP});\n` +
+  `  dest21[1] = 16181618;`
+);
+let src21 = [ 1, 2, BigUint64Array.from([3n, 4n, 42n]) ];
+let dest21 = deepCopy(src21, DEEP);
+dest21[1] = 16181618;
+console.log(
+  '    src21: ', src21, '\n' +
+  '    dest21:', dest21
+);
+
 
 
 console.error('deepCopy tests complete.\n');
