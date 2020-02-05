@@ -1,0 +1,631 @@
+Statistical profiling result from isolate-0x10412e000-56809-v8.log, (1115 ticks, 7 unaccounted, 0 excluded).
+
+ [Shared libraries]:
+   ticks  total  nonlib   name
+      4    0.4%          /usr/lib/system/libsystem_platform.dylib
+      4    0.4%          /usr/lib/system/libsystem_malloc.dylib
+      3    0.3%          /usr/lib/system/libsystem_pthread.dylib
+      3    0.3%          /usr/lib/system/libsystem_kernel.dylib
+      1    0.1%          /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+
+ [JavaScript]:
+   ticks  total  nonlib   name
+      4    0.4%    0.4%  LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      4    0.4%    0.4%  LazyCompile: *formatRaw internal/util/inspect.js:721:19
+      3    0.3%    0.3%  LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+      2    0.2%    0.2%  LazyCompile: *inspect internal/util/inspect.js:208:17
+      2    0.2%    0.2%  LazyCompile: *formatValue internal/util/inspect.js:657:21
+      2    0.2%    0.2%  LazyCompile: *<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:126:21
+      1    0.1%    0.1%  RegExp: [\x00-\x1f\x27\x5c]
+      1    0.1%    0.1%  LazyCompile: *writeSync fs.js:588:19
+      1    0.1%    0.1%  LazyCompile: *log internal/console/constructor.js:293:6
+      1    0.1%    0.1%  LazyCompile: *join internal/util.js:324:14
+      1    0.1%    0.1%  LazyCompile: *fromStringFast buffer.js:400:24
+      1    0.1%    0.1%  LazyCompile: *formatWithOptions internal/util/inspect.js:1754:27
+      1    0.1%    0.1%  LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      1    0.1%    0.1%  LazyCompile: *_onceWrap events.js:416:19
+      1    0.1%    0.1%  LazyCompile: *Writable.write _stream_writable.js:295:36
+      1    0.1%    0.1%  LazyCompile: *<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:56:22
+
+ [C++]:
+   ticks  total  nonlib   name
+    658   59.0%   59.8%  T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+    124   11.1%   11.3%  t node::fs::WriteBuffer(v8::FunctionCallbackInfo<v8::Value> const&)
+     75    6.7%    6.8%  T _task_policy_set
+     42    3.8%    3.8%  t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     36    3.2%    3.3%  T node::native_module::NativeModuleEnv::CompileFunction(v8::FunctionCallbackInfo<v8::Value> const&)
+     18    1.6%    1.6%  T __kernelrpc_mach_port_set_attributes
+     16    1.4%    1.5%  T void node::StreamBase::JSMethod<&(int node::StreamBase::WriteString<(node::encoding)1>(v8::FunctionCallbackInfo<v8::Value> const&))>(v8::FunctionCallbackInfo<v8::Value> const&)
+     15    1.3%    1.4%  t void node::Buffer::(anonymous namespace)::StringWrite<(node::encoding)1>(v8::FunctionCallbackInfo<v8::Value> const&)
+     11    1.0%    1.0%  T _cerror
+      7    0.6%    0.6%  t node::Buffer::(anonymous namespace)::ByteLengthUtf8(v8::FunctionCallbackInfo<v8::Value> const&)
+      4    0.4%    0.4%  t node::EnvGetter(v8::Local<v8::Name>, v8::PropertyCallbackInfo<v8::Value> const&)
+      4    0.4%    0.4%  t _small_malloc_should_clear
+      4    0.4%    0.4%  T _guarded_pwrite_np
+      4    0.4%    0.4%  T ___pthread_init
+      3    0.3%    0.3%  t std::__1::locale::__imp::__imp(unsigned long)
+      3    0.3%    0.3%  t _szone_free
+      2    0.2%    0.2%  t node::util::GetOwnNonIndexProperties(v8::FunctionCallbackInfo<v8::Value> const&)
+      2    0.2%    0.2%  t node::(anonymous namespace)::IsSet(v8::FunctionCallbackInfo<v8::Value> const&)
+      2    0.2%    0.2%  t __ZN2v88internal14LookupIterator17PropertyOrElementEPNS0_7IsolateENS0_6HandleINS0_6ObjectEEENS4_INS0_4NameEEENS4_INS0_10JSReceiverEEENS1_13ConfigurationE
+      2    0.2%    0.2%  T node::binding::GetInternalBinding(v8::FunctionCallbackInfo<v8::Value> const&)
+      2    0.2%    0.2%  T _mach_make_memory_entry_64
+      2    0.2%    0.2%  T __ZN2v88internal25FunctionCallbackArgumentsC1EPNS0_7IsolateENS0_6ObjectENS0_10HeapObjectES4_S5_Pmi
+      1    0.1%    0.1%  t std::__1::istreambuf_iterator<char, std::__1::char_traits<char> > std::__1::num_get<char, std::__1::istreambuf_iterator<char, std::__1::char_traits<char> > >::__do_get_unsigned<unsigned long>(std::__1::istreambuf_iterator<char, std::__1::char_traits<char> >, std::__1::istreambuf_iterator<char, std::__1::char_traits<char> >, std::__1::ios_base&, unsigned int&, unsigned long&) const
+      1    0.1%    0.1%  t std::__1::__stdinbuf<wchar_t>::__stdinbuf(__sFILE*, __mbstate_t*)
+      1    0.1%    0.1%  t node::fs::InternalModuleReadJSON(v8::FunctionCallbackInfo<v8::Value> const&)
+      1    0.1%    0.1%  t _tiny_try_realloc_in_place
+      1    0.1%    0.1%  t _tiny_malloc_should_clear
+      1    0.1%    0.1%  t _tiny_free_no_lock
+      1    0.1%    0.1%  t _nanov2_pointer_size
+      1    0.1%    0.1%  t _free_small
+      1    0.1%    0.1%  t ___inaddr_to_index
+      1    0.1%    0.1%  t __ZNSt3__16vectorIiN2v88internal13ZoneAllocatorIiEEE21__push_back_slow_pathIiEEvOT_
+      1    0.1%    0.1%  t __ZN2v84base19TemplateHashMapImplIPvS2_NS0_26HashEqualityThenKeyMatcherIS2_PFbS2_S2_EEENS_8internal20ZoneAllocationPolicyEE6ResizeES8_
+      1    0.1%    0.1%  T std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >::append(unsigned long, char)
+      1    0.1%    0.1%  T std::__1::basic_streambuf<char, std::__1::char_traits<char> >::~basic_streambuf()
+      1    0.1%    0.1%  T std::__1::basic_streambuf<char, std::__1::char_traits<char> >::xsputn(char const*, long)
+      1    0.1%    0.1%  T node::TTYWrap::New(v8::FunctionCallbackInfo<v8::Value> const&)
+      1    0.1%    0.1%  T node::NodePlatform::CurrentClockTimeMillis()
+      1    0.1%    0.1%  T _vm_allocate
+      1    0.1%    0.1%  T _vasprintf
+      1    0.1%    0.1%  T _log2f$fenv_access_off
+      1    0.1%    0.1%  T _host_get_clock_service
+      1    0.1%    0.1%  T _fputws_l
+      1    0.1%    0.1%  T _fopen
+      1    0.1%    0.1%  T __pthread_exit_if_canceled
+      1    0.1%    0.1%  T __ZNK2v86String10Utf8LengthEPNS_7IsolateE
+      1    0.1%    0.1%  T __ZNK2v86Number5ValueEv
+      1    0.1%    0.1%  T __ZNK2v85Value8ToStringENS_5LocalINS_7ContextEEE
+      1    0.1%    0.1%  T __ZN2v88internal16CompareOperation22IsLiteralCompareTypeofEPPNS0_10ExpressionEPPNS0_7LiteralE
+      1    0.1%    0.1%  T __ZN2v86Object16GetPropertyNamesENS_5LocalINS_7ContextEEENS_17KeyCollectionModeENS_14PropertyFilterENS_11IndexFilterENS_17KeyConversionModeE
+      1    0.1%    0.1%  T _CFStringFindWithOptionsAndLocale
+      1    0.1%    0.1%  A __objc_empty_vtable
+
+ [Summary]:
+   ticks  total  nonlib   name
+     27    2.4%    2.5%  JavaScript
+   1066   95.6%   96.9%  C++
+     10    0.9%    0.9%  GC
+     15    1.3%          Shared libraries
+      7    0.6%          Unaccounted
+
+ [C++ entry points]:
+   ticks    cpp   total   name
+    921   89.6%   82.6%  T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+     75    7.3%    6.7%  T _task_policy_set
+     18    1.8%    1.6%  t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      3    0.3%    0.3%  t node::fs::WriteBuffer(v8::FunctionCallbackInfo<v8::Value> const&)
+      2    0.2%    0.2%  t void node::Buffer::(anonymous namespace)::StringWrite<(node::encoding)1>(v8::FunctionCallbackInfo<v8::Value> const&)
+      1    0.1%    0.1%  t std::__1::istreambuf_iterator<char, std::__1::char_traits<char> > std::__1::num_get<char, std::__1::istreambuf_iterator<char, std::__1::char_traits<char> > >::__do_get_unsigned<unsigned long>(std::__1::istreambuf_iterator<char, std::__1::char_traits<char> >, std::__1::istreambuf_iterator<char, std::__1::char_traits<char> >, std::__1::ios_base&, unsigned int&, unsigned long&) const
+      1    0.1%    0.1%  t node::Buffer::(anonymous namespace)::ByteLengthUtf8(v8::FunctionCallbackInfo<v8::Value> const&)
+      1    0.1%    0.1%  t node::(anonymous namespace)::IsSet(v8::FunctionCallbackInfo<v8::Value> const&)
+      1    0.1%    0.1%  T _log2f$fenv_access_off
+      1    0.1%    0.1%  T ___pthread_init
+      1    0.1%    0.1%  T __ZNK2v86String10Utf8LengthEPNS_7IsolateE
+      1    0.1%    0.1%  T __ZNK2v86Number5ValueEv
+      1    0.1%    0.1%  T __ZNK2v85Value8ToStringENS_5LocalINS_7ContextEEE
+      1    0.1%    0.1%  T __ZN2v86Object16GetPropertyNamesENS_5LocalINS_7ContextEEENS_17KeyCollectionModeENS_14PropertyFilterENS_11IndexFilterENS_17KeyConversionModeE
+
+ [Bottom up (heavy) profile]:
+  Note: percentage shows a share of a particular caller in the total
+  amount of its parent calls.
+  Callers occupying less than 1.0% are not shown.
+
+   ticks parent  name
+    658   59.0%  T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+    185   28.1%    T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+     22   11.9%      LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+     21   95.5%        LazyCompile: ~formatValue internal/util/inspect.js:657:21
+     11   52.4%          LazyCompile: ~formatProperty internal/util/inspect.js:1552:24
+      6   54.5%            LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      5   45.5%            LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      6   28.6%          LazyCompile: ~inspect internal/util/inspect.js:208:17
+      4   66.7%            LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      2   33.3%            LazyCompile: ~formatWithOptionsInternal internal/util/inspect.js:1762:35
+      3   14.3%          LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      3  100.0%            LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      1    4.8%          LazyCompile: ~formatMap internal/util/inspect.js:1438:19
+      1  100.0%            LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      1    4.5%        LazyCompile: *formatValue internal/util/inspect.js:657:21
+      1  100.0%          LazyCompile: *inspect internal/util/inspect.js:208:17
+      1  100.0%            LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+     21   11.4%      T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      6   28.6%        Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      6  100.0%          LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+      6  100.0%            LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+      4   19.0%        LazyCompile: ~makeEmpty /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:114:16
+      4  100.0%          LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+      4  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      2    9.5%        LazyCompile: ~keyVals /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:124:14
+      2  100.0%          LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      2  100.0%            LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+      2    9.5%        LazyCompile: *formatRaw internal/util/inspect.js:721:19
+      2  100.0%          LazyCompile: *formatValue internal/util/inspect.js:657:21
+      1   50.0%            LazyCompile: *inspect internal/util/inspect.js:208:17
+      1   50.0%            LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      2    9.5%        LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      2  100.0%          LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      2  100.0%            LazyCompile: *formatRaw internal/util/inspect.js:721:19
+      1    4.8%        LazyCompile: ~makeShallow /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:163:18
+      1  100.0%          LazyCompile: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:56:22
+      1  100.0%            T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      1    4.8%        LazyCompile: ~keyVals /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:248:14
+      1  100.0%          LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      1  100.0%            LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+      1    4.8%        LazyCompile: ~formatProperty internal/util/inspect.js:1552:24
+      1  100.0%          LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      1  100.0%            LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      1    4.8%        LazyCompile: ~formatMap internal/util/inspect.js:1438:19
+      1  100.0%          LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      1  100.0%            LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      1    4.8%        LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      1  100.0%          LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+      1  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     20   10.8%      Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     20  100.0%        LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     20  100.0%          LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+     20  100.0%            LazyCompile: ~Module.load internal/modules/cjs/loader.js:976:33
+     10    5.4%      LazyCompile: ~formatValue internal/util/inspect.js:657:21
+     10  100.0%        LazyCompile: ~inspect internal/util/inspect.js:208:17
+     10  100.0%          LazyCompile: ~formatWithOptionsInternal internal/util/inspect.js:1762:35
+     10  100.0%            LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      9    4.9%      LazyCompile: ~objectType /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:72:21
+      9  100.0%        LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+      9  100.0%          Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      9  100.0%            LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+      7    3.8%      LazyCompile: ~addElement /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:232:17
+      4   57.1%        LazyCompile: *<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:56:22
+      4  100.0%          T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      4  100.0%            LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      3   42.9%        LazyCompile: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:56:22
+      3  100.0%          T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      3  100.0%            LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      7    3.8%      LazyCompile: *formatRaw internal/util/inspect.js:721:19
+      7  100.0%        LazyCompile: *formatValue internal/util/inspect.js:657:21
+      5   71.4%          LazyCompile: *inspect internal/util/inspect.js:208:17
+      5  100.0%            LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      2   28.6%          LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      1   50.0%            LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      1   50.0%            LazyCompile: *formatArray internal/util/inspect.js:1379:21
+      6    3.2%      LazyCompile: ~inspect internal/util/inspect.js:208:17
+      5   83.3%        LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      5  100.0%          LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      5  100.0%            LazyCompile: ~Console.<computed> internal/console/constructor.js:282:47
+      1   16.7%        LazyCompile: ~formatWithOptionsInternal internal/util/inspect.js:1762:35
+      1  100.0%          LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      1  100.0%            LazyCompile: ~Console.<computed> internal/console/constructor.js:282:47
+      6    3.2%      LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      4   66.7%        LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+      4  100.0%          Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      4  100.0%            LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+      2   33.3%        LazyCompile: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:56:22
+      2  100.0%          T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      2  100.0%            LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      6    3.2%      LazyCompile: ~FastBuffer internal/buffer.js:944:1
+      6  100.0%        LazyCompile: ~fromStringFast buffer.js:400:24
+      6  100.0%          LazyCompile: ~fromString buffer.js:419:20
+      6  100.0%            LazyCompile: ~from buffer.js:285:28
+      5    2.7%      LazyCompile: ~reduceToSingleString internal/util/inspect.js:1636:30
+      5  100.0%        LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      5  100.0%          LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      5  100.0%            LazyCompile: ~inspect internal/util/inspect.js:208:17
+      4    2.2%      LazyCompile: ~writeSync fs.js:588:19
+      4  100.0%        LazyCompile: ~SyncWriteStream._write internal/fs/sync_write_stream.js:23:44
+      4  100.0%          LazyCompile: ~doWrite _stream_writable.js:454:17
+      4  100.0%            LazyCompile: ~writeOrBuffer _stream_writable.js:412:23
+      4    2.2%      LazyCompile: ~log internal/console/constructor.js:293:6
+      4  100.0%        t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      3   75.0%          Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      3  100.0%            LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+      1   25.0%          LazyCompile: ~foo /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:141:37
+      1  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      4    2.2%      LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+      4  100.0%        Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      4  100.0%          LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+      4  100.0%            LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+      4    2.2%      LazyCompile: *log internal/console/constructor.js:293:6
+      4  100.0%        t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      4  100.0%          Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      4  100.0%            LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+      4    2.2%      LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      4  100.0%        LazyCompile: ~log internal/console/constructor.js:293:6
+      4  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      4  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      3    1.6%      LazyCompile: ~write buffer.js:587:12
+      3  100.0%        LazyCompile: ~fromStringFast buffer.js:400:24
+      3  100.0%          LazyCompile: ~fromString buffer.js:419:20
+      3  100.0%            LazyCompile: ~from buffer.js:285:28
+      3    1.6%      LazyCompile: ~<anonymous> internal/per_context/primordials.js:23:10
+      3  100.0%        LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      3  100.0%          LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      1   33.3%            LazyCompile: ~inspect internal/util/inspect.js:208:17
+      1   33.3%            LazyCompile: ~formatProperty internal/util/inspect.js:1552:24
+      1   33.3%            LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      3    1.6%      LazyCompile: *formatValue internal/util/inspect.js:657:21
+      3  100.0%        LazyCompile: *inspect internal/util/inspect.js:208:17
+      3  100.0%          LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      3  100.0%            LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      2    1.1%      LazyCompile: ~processTicksAndRejections internal/process/task_queues.js:69:35
+      2    1.1%      LazyCompile: ~makeShallow /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:179:18
+      1   50.0%        LazyCompile: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:56:22
+      1  100.0%          T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      1  100.0%            LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      1   50.0%        LazyCompile: *<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:56:22
+      1  100.0%          T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      1  100.0%            LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      2    1.1%      LazyCompile: ~keyVals /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:248:14
+      2  100.0%        LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+      1   50.0%          LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+      1  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      1   50.0%          LazyCompile: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:56:22
+      1  100.0%            T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      2    1.1%      LazyCompile: ~fromStringFast buffer.js:400:24
+      2  100.0%        LazyCompile: ~fromString buffer.js:419:20
+      2  100.0%          LazyCompile: ~from buffer.js:285:28
+      2  100.0%            LazyCompile: ~decodeChunk _stream_writable.js:370:21
+      2    1.1%      LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      2  100.0%        LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      2  100.0%          LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      2  100.0%            LazyCompile: ~inspect internal/util/inspect.js:208:17
+      2    1.1%      LazyCompile: ~SyncWriteStream._write internal/fs/sync_write_stream.js:23:44
+      2  100.0%        LazyCompile: ~doWrite _stream_writable.js:454:17
+      2  100.0%          LazyCompile: ~writeOrBuffer _stream_writable.js:412:23
+      2  100.0%            LazyCompile: ~Writable.write _stream_writable.js:295:36
+     23    3.5%    LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+     19   82.6%      LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      9   47.4%        LazyCompile: ~inspect internal/util/inspect.js:208:17
+      5   55.6%          LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      5  100.0%            LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      4   44.4%          LazyCompile: ~formatWithOptionsInternal internal/util/inspect.js:1762:35
+      4  100.0%            LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      8   42.1%        LazyCompile: ~formatProperty internal/util/inspect.js:1552:24
+      5   62.5%          LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      5  100.0%            LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      3   37.5%          LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      3  100.0%            LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      2   10.5%        LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      2  100.0%          LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      2  100.0%            LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      4   17.4%      LazyCompile: *formatValue internal/util/inspect.js:657:21
+      2   50.0%        LazyCompile: *inspect internal/util/inspect.js:208:17
+      2  100.0%          LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      2  100.0%            LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      1   25.0%        LazyCompile: ~inspect internal/util/inspect.js:208:17
+      1  100.0%          LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      1  100.0%            LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      1   25.0%        LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      1  100.0%          LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      1  100.0%            LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+     20    3.0%    LazyCompile: ~objectType /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:72:21
+     17   85.0%      LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+     17  100.0%        Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     17  100.0%          LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     17  100.0%            LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+      3   15.0%      LazyCompile: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:126:21
+      3  100.0%        T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      3  100.0%          LazyCompile: ~keyVals /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:124:14
+      3  100.0%            LazyCompile: ~copyObject /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:45:20
+     18    2.7%    Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     18  100.0%      LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     18  100.0%        LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+     18  100.0%          LazyCompile: ~Module.load internal/modules/cjs/loader.js:976:33
+     18  100.0%            LazyCompile: ~Module._load internal/modules/cjs/loader.js:840:24
+     14    2.1%    LazyCompile: ~log internal/console/constructor.js:293:6
+     14  100.0%      t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     14  100.0%        Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     14  100.0%          LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     14  100.0%            LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+     14    2.1%    LazyCompile: ~Console.<computed> internal/console/constructor.js:222:46
+     14  100.0%      LazyCompile: ~log internal/console/constructor.js:293:6
+     14  100.0%        t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     13   92.9%          Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     13  100.0%            LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+      1    7.1%          LazyCompile: ~foo /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:141:37
+      1  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     13    2.0%    LazyCompile: ~Writable.write _stream_writable.js:295:36
+      9   69.2%      LazyCompile: ~Console.<computed> internal/console/constructor.js:222:46
+      9  100.0%        LazyCompile: ~log internal/console/constructor.js:293:6
+      9  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      9  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      4   30.8%      LazyCompile: *log internal/console/constructor.js:293:6
+      4  100.0%        t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      4  100.0%          Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      4  100.0%            LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     12    1.8%    LazyCompile: ~from buffer.js:285:28
+      6   50.0%      LazyCompile: ~decodeChunk _stream_writable.js:370:21
+      6  100.0%        LazyCompile: ~writeOrBuffer _stream_writable.js:412:23
+      4   66.7%          LazyCompile: ~Writable.write _stream_writable.js:295:36
+      4  100.0%            LazyCompile: ~Console.<computed> internal/console/constructor.js:222:46
+      2   33.3%          LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      2  100.0%            LazyCompile: ~log internal/console/constructor.js:293:6
+      4   33.3%      LazyCompile: *Writable.write _stream_writable.js:295:36
+      4  100.0%        LazyCompile: *log internal/console/constructor.js:293:6
+      4  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      4  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      2   16.7%      LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+      1   50.0%        LazyCompile: ~Writable.write _stream_writable.js:295:36
+      1  100.0%          LazyCompile: *log internal/console/constructor.js:293:6
+      1  100.0%            t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      1   50.0%        LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      1  100.0%          LazyCompile: ~log internal/console/constructor.js:293:6
+      1  100.0%            t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     12    1.8%    LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      6   50.0%      LazyCompile: ~inspect internal/util/inspect.js:208:17
+      4   66.7%        LazyCompile: ~formatWithOptionsInternal internal/util/inspect.js:1762:35
+      4  100.0%          LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      4  100.0%            LazyCompile: ~Console.<computed> internal/console/constructor.js:282:47
+      2   33.3%        LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      2  100.0%          LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      2  100.0%            LazyCompile: ~Console.<computed> internal/console/constructor.js:282:47
+      4   33.3%      LazyCompile: ~formatProperty internal/util/inspect.js:1552:24
+      3   75.0%        LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      3  100.0%          LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      3  100.0%            LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      1   25.0%        LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      1  100.0%          LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      1  100.0%            LazyCompile: ~inspect internal/util/inspect.js:208:17
+      2   16.7%      LazyCompile: ~formatMap internal/util/inspect.js:1438:19
+      2  100.0%        LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      2  100.0%          LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      2  100.0%            LazyCompile: ~formatProperty internal/util/inspect.js:1552:24
+     12    1.8%    LazyCompile: ~_addListener events.js:333:22
+     12  100.0%      LazyCompile: ~addListener events.js:395:58
+      7   58.3%        LazyCompile: *log internal/console/constructor.js:293:6
+      7  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      7  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      3   25.0%        LazyCompile: ~once events.js:424:44
+      3  100.0%          LazyCompile: ~Console.<computed> internal/console/constructor.js:222:46
+      3  100.0%            LazyCompile: ~log internal/console/constructor.js:293:6
+      2   16.7%        LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      2  100.0%          LazyCompile: ~log internal/console/constructor.js:293:6
+      2  100.0%            t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     12    1.8%    LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     12  100.0%      LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+     12  100.0%        LazyCompile: ~Module.load internal/modules/cjs/loader.js:976:33
+     12  100.0%          LazyCompile: ~Module._load internal/modules/cjs/loader.js:840:24
+     12  100.0%            LazyCompile: ~executeUserEntryPoint internal/modules/run_main.js:64:31
+     12    1.8%    LazyCompile: ~Console.<computed> internal/console/constructor.js:282:47
+     12  100.0%      LazyCompile: ~log internal/console/constructor.js:293:6
+     12  100.0%        t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     12  100.0%          Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     12  100.0%            LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     12    1.8%    LazyCompile: *formatRaw internal/util/inspect.js:721:19
+     12  100.0%      LazyCompile: *formatValue internal/util/inspect.js:657:21
+     10   83.3%        LazyCompile: *inspect internal/util/inspect.js:208:17
+     10  100.0%          LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      5   50.0%            LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      5   50.0%            LazyCompile: *formatWithOptions internal/util/inspect.js:1754:27
+      1    8.3%        LazyCompile: ~formatSet internal/util/inspect.js:1428:19
+      1  100.0%          LazyCompile: *formatRaw internal/util/inspect.js:721:19
+      1  100.0%            LazyCompile: *formatValue internal/util/inspect.js:657:21
+      1    8.3%        LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      1  100.0%          LazyCompile: *formatArray internal/util/inspect.js:1379:21
+      1  100.0%            LazyCompile: *formatRaw internal/util/inspect.js:721:19
+     11    1.7%    LazyCompile: ~onwrite _stream_writable.js:476:17
+     10   90.9%      LazyCompile: ~SyncWriteStream._write internal/fs/sync_write_stream.js:23:44
+     10  100.0%        LazyCompile: ~doWrite _stream_writable.js:454:17
+     10  100.0%          LazyCompile: ~writeOrBuffer _stream_writable.js:412:23
+     10  100.0%            LazyCompile: ~Writable.write _stream_writable.js:295:36
+      1    9.1%      LazyCompile: ~afterWriteDispatched internal/stream_base_commons.js:149:30
+      1  100.0%        LazyCompile: ~writeGeneric internal/stream_base_commons.js:141:22
+      1  100.0%          LazyCompile: ~Socket._writeGeneric net.js:753:42
+      1  100.0%            LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+     11    1.7%    LazyCompile: ~fromStringFast buffer.js:400:24
+     11  100.0%      LazyCompile: ~fromString buffer.js:419:20
+     11  100.0%        LazyCompile: ~from buffer.js:285:28
+     10   90.9%          LazyCompile: ~decodeChunk _stream_writable.js:370:21
+     10  100.0%            LazyCompile: ~writeOrBuffer _stream_writable.js:412:23
+      1    9.1%          LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+      1  100.0%            LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+     11    1.7%    LazyCompile: ~SyncWriteStream._write internal/fs/sync_write_stream.js:23:44
+     11  100.0%      LazyCompile: ~doWrite _stream_writable.js:454:17
+     11  100.0%        LazyCompile: ~writeOrBuffer _stream_writable.js:412:23
+      7   63.6%          LazyCompile: ~Writable.write _stream_writable.js:295:36
+      7  100.0%            LazyCompile: ~Console.<computed> internal/console/constructor.js:222:46
+      4   36.4%          LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      4  100.0%            LazyCompile: ~log internal/console/constructor.js:293:6
+     11    1.7%    LazyCompile: *log internal/console/constructor.js:293:6
+     11  100.0%      t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     11  100.0%        Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     11  100.0%          LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     11  100.0%            LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+     11    1.7%    LazyCompile: *fromStringFast buffer.js:400:24
+     11  100.0%      LazyCompile: ~fromString buffer.js:419:20
+     11  100.0%        LazyCompile: ~from buffer.js:285:28
+      7   63.6%          LazyCompile: *Writable.write _stream_writable.js:295:36
+      7  100.0%            LazyCompile: *log internal/console/constructor.js:293:6
+      4   36.4%          LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+      3   75.0%            LazyCompile: ~Writable.write _stream_writable.js:295:36
+      1   25.0%            LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+     10    1.5%    t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     10  100.0%      Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     10  100.0%        LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     10  100.0%          LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+     10  100.0%            LazyCompile: ~Module.load internal/modules/cjs/loader.js:976:33
+     10    1.5%    LazyCompile: ~writeSync fs.js:588:19
+      9   90.0%      LazyCompile: ~SyncWriteStream._write internal/fs/sync_write_stream.js:23:44
+      9  100.0%        LazyCompile: ~doWrite _stream_writable.js:454:17
+      9  100.0%          LazyCompile: ~writeOrBuffer _stream_writable.js:412:23
+      8   88.9%            LazyCompile: ~Writable.write _stream_writable.js:295:36
+      1   11.1%            LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      1   10.0%      LazyCompile: *Writable.write _stream_writable.js:295:36
+      1  100.0%        LazyCompile: *log internal/console/constructor.js:293:6
+      1  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      1  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      9    1.4%    LazyCompile: ~formatTypedArray internal/util/inspect.js:1397:26
+      5   55.6%      LazyCompile: *formatRaw internal/util/inspect.js:721:19
+      5  100.0%        LazyCompile: *formatValue internal/util/inspect.js:657:21
+      5  100.0%          LazyCompile: *formatProperty internal/util/inspect.js:1552:24
+      4   80.0%            LazyCompile: *formatArray internal/util/inspect.js:1379:21
+      1   20.0%            LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      4   44.4%      LazyCompile: ~formatRaw internal/util/inspect.js:721:19
+      4  100.0%        LazyCompile: ~formatValue internal/util/inspect.js:657:21
+      4  100.0%          LazyCompile: ~formatProperty internal/util/inspect.js:1552:24
+      4  100.0%            LazyCompile: ~formatArray internal/util/inspect.js:1379:21
+      9    1.4%    LazyCompile: ~deepCopy /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/index.js:9:35
+      9  100.0%      Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      9  100.0%        LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+      9  100.0%          LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+      9  100.0%            LazyCompile: ~Module.load internal/modules/cjs/loader.js:976:33
+      8    1.2%    LazyCompile: ~removeListener events.js:441:28
+      7   87.5%      LazyCompile: ~Console.<computed> internal/console/constructor.js:222:46
+      7  100.0%        LazyCompile: ~log internal/console/constructor.js:293:6
+      7  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      7  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      1   12.5%      LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      1  100.0%        LazyCompile: ~warn internal/console/constructor.js:298:7
+      1  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      1  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      8    1.2%    LazyCompile: ~inspect internal/util/inspect.js:208:17
+      7   87.5%      LazyCompile: ~formatWithOptionsInternal internal/util/inspect.js:1762:35
+      7  100.0%        LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      7  100.0%          LazyCompile: ~Console.<computed> internal/console/constructor.js:282:47
+      7  100.0%            LazyCompile: ~log internal/console/constructor.js:293:6
+      1   12.5%      LazyCompile: *formatWithOptionsInternal internal/util/inspect.js:1762:35
+      1  100.0%        LazyCompile: ~formatWithOptions internal/util/inspect.js:1754:27
+      1  100.0%          LazyCompile: ~Console.<computed> internal/console/constructor.js:282:47
+      1  100.0%            LazyCompile: ~log internal/console/constructor.js:293:6
+      7    1.1%    LazyCompile: ~writeOrBuffer _stream_writable.js:412:23
+      4   57.1%      LazyCompile: ~Writable.write _stream_writable.js:295:36
+      4  100.0%        LazyCompile: ~Console.<computed> internal/console/constructor.js:222:46
+      4  100.0%          LazyCompile: ~log internal/console/constructor.js:293:6
+      4  100.0%            t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      3   42.9%      LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      3  100.0%        LazyCompile: ~log internal/console/constructor.js:293:6
+      3  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      3  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      7    1.1%    LazyCompile: ~FastBuffer internal/buffer.js:944:1
+      7  100.0%      LazyCompile: ~fromStringFast buffer.js:400:24
+      7  100.0%        LazyCompile: ~fromString buffer.js:419:20
+      7  100.0%          LazyCompile: ~from buffer.js:285:28
+      6   85.7%            LazyCompile: ~decodeChunk _stream_writable.js:370:21
+      1   14.3%            LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+
+    124   11.1%  t node::fs::WriteBuffer(v8::FunctionCallbackInfo<v8::Value> const&)
+    121   97.6%    T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+    121  100.0%      LazyCompile: ~writeSync fs.js:588:19
+    120   99.2%        LazyCompile: ~SyncWriteStream._write internal/fs/sync_write_stream.js:23:44
+    120  100.0%          LazyCompile: ~doWrite _stream_writable.js:454:17
+    120  100.0%            LazyCompile: ~writeOrBuffer _stream_writable.js:412:23
+      3    2.4%    LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+      2   66.7%      LazyCompile: ~Writable.write _stream_writable.js:295:36
+      2  100.0%        LazyCompile: *log internal/console/constructor.js:293:6
+      2  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      2  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      1   33.3%      LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      1  100.0%        LazyCompile: ~log internal/console/constructor.js:293:6
+      1  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      1  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+
+     75    6.7%  T _task_policy_set
+     40   53.3%    LazyCompile: *writeSync fs.js:588:19
+     40  100.0%      LazyCompile: *Writable.write _stream_writable.js:295:36
+     40  100.0%        LazyCompile: *log internal/console/constructor.js:293:6
+     40  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     40  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     35   46.7%    LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+     19   54.3%      LazyCompile: ~Writable.write _stream_writable.js:295:36
+     19  100.0%        LazyCompile: *log internal/console/constructor.js:293:6
+     19  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     19  100.0%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     16   45.7%      LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+     16  100.0%        LazyCompile: ~log internal/console/constructor.js:293:6
+     16  100.0%          t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     15   93.8%            Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      1    6.3%            LazyCompile: ~foo /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:141:37
+
+     42    3.8%  t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+     39   92.9%    T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+     39  100.0%      Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+     39  100.0%        LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+     39  100.0%          LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+     39  100.0%            LazyCompile: ~Module.load internal/modules/cjs/loader.js:976:33
+      3    7.1%    Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      3  100.0%      LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+      3  100.0%        LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:1148:37
+      3  100.0%          LazyCompile: ~Module.load internal/modules/cjs/loader.js:976:33
+      3  100.0%            LazyCompile: ~Module._load internal/modules/cjs/loader.js:840:24
+
+     36    3.2%  T node::native_module::NativeModuleEnv::CompileFunction(v8::FunctionCallbackInfo<v8::Value> const&)
+     36  100.0%    T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+     36  100.0%      LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+     36  100.0%        LazyCompile: ~nativeModuleRequire internal/bootstrap/loaders.js:294:29
+      8   22.2%          Eval: ~<anonymous> internal/bootstrap/node.js:1:1
+      3    8.3%          LazyCompile: ~setupPrepareStackTrace internal/bootstrap/node.js:307:32
+      3  100.0%            Eval: ~<anonymous> internal/bootstrap/node.js:1:1
+      3    8.3%          Eval: ~<anonymous> stream.js:1:1
+      3  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      2    5.6%          LazyCompile: ~createGlobalConsole internal/bootstrap/node.js:427:29
+      2  100.0%            Eval: ~<anonymous> internal/bootstrap/node.js:1:1
+      2    5.6%          Eval: ~<anonymous> tty.js:1:1
+      2  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      2    5.6%          Eval: ~<anonymous> internal/url.js:1:1
+      2  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      2    5.6%          Eval: ~<anonymous> internal/modules/esm/loader.js:1:1
+      2  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          LazyCompile: ~setupBuffer internal/bootstrap/node.js:410:21
+      1  100.0%            Eval: ~<anonymous> internal/bootstrap/node.js:1:1
+      1    2.8%          LazyCompile: ~initializeCJSLoader internal/bootstrap/pre_execution.js:410:29
+      1  100.0%            LazyCompile: ~prepareMainThreadExecution internal/bootstrap/pre_execution.js:13:36
+      1    2.8%          Eval: ~<anonymous> internal/util/inspect.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> internal/timers.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> internal/source_map/source_map_cache.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> internal/process/esm_loader.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> internal/modules/cjs/helpers.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> internal/fs/sync_write_stream.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> internal/console/global.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> internal/bootstrap/pre_execution.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> fs.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> events.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> buffer.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+      1    2.8%          Eval: ~<anonymous> _stream_readable.js:1:1
+      1  100.0%            LazyCompile: ~compileForInternalLoader internal/bootstrap/loaders.js:261:27
+
+     18    1.6%  T __kernelrpc_mach_port_set_attributes
+      5   27.8%    T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+      2   40.0%      LazyCompile: ~<anonymous> internal/validators.js:82:3
+      2  100.0%        LazyCompile: *hidden internal/errors.js:251:25
+      2  100.0%          LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+      2  100.0%            LazyCompile: *Console.<computed> internal/console/constructor.js:222:46
+      1   20.0%      LazyCompile: ~processTicksAndRejections internal/process/task_queues.js:69:35
+      1   20.0%      LazyCompile: ~onParseComplete internal/url.js:237:25
+      1  100.0%        t node::url::Parse(v8::FunctionCallbackInfo<v8::Value> const&)
+      1  100.0%          LazyCompile: ~URL internal/url.js:325:14
+      1  100.0%            LazyCompile: ~pathToFileURL internal/url.js:1375:23
+      1   20.0%      LazyCompile: *log internal/console/constructor.js:293:6
+      1  100.0%        t node::inspector::(anonymous namespace)::InspectorConsoleCall(v8::FunctionCallbackInfo<v8::Value> const&)
+      1  100.0%          Eval: ~<anonymous> /Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:1:1
+      1  100.0%            LazyCompile: ~Module._compile internal/modules/cjs/loader.js:1093:37
+
+     16    1.4%  T void node::StreamBase::JSMethod<&(int node::StreamBase::WriteString<(node::encoding)1>(v8::FunctionCallbackInfo<v8::Value> const&))>(v8::FunctionCallbackInfo<v8::Value> const&)
+     16  100.0%    T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+     16  100.0%      LazyCompile: ~handleWriteReq internal/stream_base_commons.js:45:24
+     16  100.0%        LazyCompile: ~writeGeneric internal/stream_base_commons.js:141:22
+     16  100.0%          LazyCompile: ~Socket._writeGeneric net.js:753:42
+     10   62.5%            LazyCompile: ~Socket._write net.js:790:35
+      6   37.5%            LazyCompile: *writeOrBuffer _stream_writable.js:412:23
+
+     15    1.3%  t void node::Buffer::(anonymous namespace)::StringWrite<(node::encoding)1>(v8::FunctionCallbackInfo<v8::Value> const&)
+     13   86.7%    T __ZN2v88internal16DeclarationScope35SavePreparseDataForDeclarationScopeEPNS0_6ParserE
+     13  100.0%      LazyCompile: ~write buffer.js:587:12
+     13  100.0%        LazyCompile: ~fromStringFast buffer.js:400:24
+     13  100.0%          LazyCompile: ~fromString buffer.js:419:20
+     13  100.0%            LazyCompile: ~from buffer.js:285:28
+      2   13.3%    LazyCompile: *fromStringFast buffer.js:400:24
+      2  100.0%      LazyCompile: ~fromString buffer.js:419:20
+      2  100.0%        LazyCompile: ~from buffer.js:285:28
+      2  100.0%          LazyCompile: *Writable.write _stream_writable.js:295:36
+      2  100.0%            LazyCompile: *log internal/console/constructor.js:293:6
+

@@ -9,7 +9,7 @@
 module.exports = function deepCopy(source, goDeep = true) {
 
   if (!goDeep) {
-    return shallowCopy(source);
+    return objectBehaviors[objectType(source)].makeShallow(source);;
   }
 
   if (!source || isPrimitive(source)) {
@@ -28,57 +28,51 @@ module.exports = function deepCopy(source, goDeep = true) {
 };
 
 /**
- * perform a shallow copy of source
- * @param {*} source
- * @return {*}
- */
-function shallowCopy(source) {
-  return objectBehaviors[objectType(source)].makeShallow(source);
-}
-
-/**
  * copy source object to destination object
  * @param {[]|{}} srcObject
  * @param {[]|{}} destObject
  * @param {string|null} [srcType] - type of the source object
  */
-function copyObject(srcObject, destObject,
-                  srcType = null) {
+const copyObject = (srcObject, destObject,
+                  srcType = null) => {
   // TODO check for circular references
   srcType = srcType || objectType(srcObject);
+  const srcBehavior = objectBehaviors[srcType];
 
-  // console.log('copyObject srcType:',srcType);
-
-  if (!objectBehaviors[srcType].mayDeepCopy) {
+  if (!srcBehavior.mayDeepCopy) {
     return;
   }
+  const addElement = srcBehavior.addElement;
+  const objIterate = srcBehavior.iterate;
 
-  const srcKeyVals = objectBehaviors[srcType].keyVals(srcObject);
-  const addElement = objectBehaviors[srcType].addElement;
-  srcKeyVals.forEach(element => {
+  // iterate over object's elements
+  objIterate(srcObject, (elInfo) => {
     const {
-      key: elKey,
       value: elValue,
-      descriptor: elDescriptor
-    } = element;
-    const elType = objectType(elValue);
-    const mayDeepCopy = objectBehaviors[elType].mayDeepCopy;
-    const elNew = mayDeepCopy
-      ? objectBehaviors[elType].makeEmpty(elValue)
-      : objectBehaviors[elType].makeShallow(elValue);
-    addElement(destObject, elKey, elNew, elDescriptor);
+      type: elType
+    } = elInfo;
+    let elMayDeepCopy = objectBehaviors[elType].mayDeepCopy;
+
+    let elNew;
+    if (elMayDeepCopy) {
+      elNew = objectBehaviors[elType].makeEmpty(elValue);
+    } else {
+      elNew = objectBehaviors[elType].makeShallow(elValue);
+    }
+
+    addElement(destObject, elInfo.key, elNew, elInfo.descriptor);
+
+    if (!elMayDeepCopy) { return; }
+
     copyObject(elValue, elNew, elType);
   });
 }
 
 // establish a "type" keyword for an object
-function objectType (obj) {
-  //console.log('    objectType obj:',obj);
-  let typeTry;
+const objectType = (obj) => {
 
   // match primitives right away
   if (isPrimitive(obj) || !obj instanceof Object) {
-    //console.log('      objectType type: primitive');
     return 'primitive';
   }
 
@@ -87,21 +81,17 @@ function objectType (obj) {
     && obj.constructor.name.toLowerCase();
   if (typeof consName === 'string' && consName.length
     && objectBehaviors[consName]) {
-    //console.log(`      objectType type: ${consName} (consName)`);
     return consName;
   }
 
   // try to match by looping through objectBehaviors type property
+  let typeTry;
   for (const name in objectBehaviors) {
     typeTry = objectBehaviors[name].type;
-    //console.log(`      objectType trying: ${name}`);
     if (!typeTry || obj instanceof typeTry) {
-      //console.log(`      objectType found type: ${name} (match by looping`);
       return name;
     }
   }
-
-  //console.log('      objectType NOT found type: unknown');
   return 'unknown';
 }
 
@@ -112,7 +102,7 @@ function objectType (obj) {
   addElement - add a new element to the object
   makeEmpty - make a new, empty object
   makeShallow - make a shallow copy of object
-  keyVals - make array of {key,value,descriptor} for object element
+  iterate - iterate over elements with callback({key,value,type,descriptor})
   NOTE: The order is important - custom objects must be defined before the
         standard JavaScript Object.
 */
@@ -131,15 +121,17 @@ const objectBehaviors = {
       Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
       return dest;
     },
-    keyVals: array => {
-      let kvPairs = [];
-      array.forEach((val, index) => {
-        kvPairs.push({
-          key: index,
-          value: val
-        });
-      });
-      return kvPairs;
+    iterate: (array, callback) => {
+      const len = array.length;
+      for (let i = 0; i < len; i++) {
+        const val = array[i];
+        const elInfo = {
+          key: i,
+          value: val,
+          type: objectType(val)
+        }
+        callback(elInfo);
+      }
     }
   },
   "date": {
@@ -149,7 +141,6 @@ const objectBehaviors = {
   "regexp": {
     type: RegExp,
     makeShallow: src => src,
-    keyVals: () => null,
   },
   'function': {
     type: Function,
@@ -205,15 +196,15 @@ const objectBehaviors = {
     addElement: (map, key, value) => map.set(key, value),
     makeEmpty: () => new Map(),
     makeShallow: sourceMap => new Map(sourceMap),
-    keyVals: map => {
-      let kvPairs = [];
+    iterate: (map, callback) => {
       map.forEach((val, key) => {
-        kvPairs.push({
+        const elInfo = {
           key: key,
-          value: map.get(key)
-        });
-      });
-      return kvPairs;
+          value: val,
+          type: objectType(val)
+        }
+        callback(elInfo);
+      })
     }
   },
   "set": {
@@ -222,15 +213,15 @@ const objectBehaviors = {
     addElement: (set, key, value) => set.add(value),
     makeEmpty: () => new Set(),
     makeShallow: set => new Set(set),
-    keyVals: set => {
-      let kvPairs = [];
+    iterate: (set, callback) => {
       set.forEach(val => {
-        kvPairs.push({
+        const elInfo = {
           key: null,
-          value: val
-        });
-      });
-      return kvPairs;
+          value: val,
+          type: objectType(val)
+        }
+        callback(elInfo);
+      })
     }
   },
   "object": {
@@ -252,24 +243,23 @@ const objectBehaviors = {
       Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
       return dest;
     },
-    keyVals: obj => {
-      let kvPairs = [];
-      let propNames = Object.getOwnPropertyNames(obj);
-
-      // console.log('"object" keyVals propNames:',propNames);
-
-      propNames.forEach(propName => {
-        const pDescriptor = Object.getOwnPropertyDescriptor(obj, propName);
-        const prop = pDescriptor.value;
-        kvPairs.push({
-          key: propName,
-          value: prop,
-          descriptor: pDescriptor
-        });
-      });
-      // console.log('"object" kvPairs:',kvPairs);
-      return kvPairs;
+    iterate: (obj, callback) => {
+      const keys = Object.getOwnPropertyNames(obj);
+      const len = keys.length;
+      for (let i = 0; i < len; i++) {
+        const key = keys[i];
+        const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+        const value = descriptor.value;
+        const elInfo = {
+          key: key,
+          value: value,
+          type: objectType(value),
+          descriptor: descriptor
+        }
+        callback(elInfo);
+      }
     }
+
   },
   "unknown": {
     makeShallow: source => source
@@ -280,7 +270,7 @@ const objectBehaviors = {
 };
 
 // true if the item is a primitive data type
-function isPrimitive(item) {
+const isPrimitive = (item) => {
   let type = typeof item;
   return type === 'number' || type === 'string' || type === 'boolean'
     || type === 'undefined' || type === 'bigint' || type === 'symbol'
