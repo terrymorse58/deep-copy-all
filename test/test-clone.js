@@ -1,10 +1,9 @@
-const copierName = 'deep-copy-all';
-const deepCopy = require('../index.js');
+const copierName = 'clone';
+const deepCopy = require('clone');
 const testSuite = require('./test-suite.js');
 
 // Settings
 const options = {
-  goDeep: true,
   includeNonEnumerable: true
 }
 

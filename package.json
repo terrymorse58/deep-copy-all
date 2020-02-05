@@ -1,6 +1,6 @@
 {
   "name": "deep-copy-all",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "deep copy JavaScript arrays and objects, preserving custom methods",
   "main": "index.js",
   "repository": {
@@ -9,6 +9,9 @@
   },
   "scripts": {
     "test": "node ./test/test-js.js > ./test/result-js.txt",
+    "cloneextend": "node ./test/test-cloneextend.js > ./test/result-cloneextend.txt",
+    "testclone": "node ./test/test-clone.js > ./test/result-clone.txt",
+    "test-deepcopy": "node ./test/test-deepcopy.js > ./test/result-deepcopy.txt",
     "profile": "node --prof ./test/test-js.js > ./test/result-profile.txt",
     "build": "bash build.sh"
   },
@@ -21,5 +24,8 @@
   "author": "Terry Morse",
   "license": "MIT",
   "devDependencies": {
+    "clone": "^2.1.2",
+    "cloneextend": "0.0.3",
+    "deepcopy": "^2.0.0"
   }
 }

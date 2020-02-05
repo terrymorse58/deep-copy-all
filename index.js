@@ -3,10 +3,13 @@
 /**
  * return a deep copy of the source
  * @param {Date|[]|{}} source
- * @param {Boolean=true} goDeep - perform deep copy
+ * @param {Boolean} options.goDeep - perform deep copy
+ * @param {Boolean} options.includeNonEnumerable - copy non-enumerables
  * @return {*}
  */
-module.exports = function deepCopy(source, goDeep = true) {
+module.exports = function deepCopy(source,
+  options) {
+  const {goDeep: goDeep, includeNonEnumerable: includeNonEnumerable} = options;
 
   if (!goDeep) {
     return objectBehaviors[objectType(source)].makeShallow(source);;
@@ -23,7 +26,7 @@ module.exports = function deepCopy(source, goDeep = true) {
   }
 
   let dest = objectBehaviors[sourceType].makeEmpty(source);
-  copyObject(source, dest, sourceType);
+  copyObject(source, dest, sourceType, includeNonEnumerable);
   return dest;
 };
 
@@ -32,9 +35,10 @@ module.exports = function deepCopy(source, goDeep = true) {
  * @param {[]|{}} srcObject
  * @param {[]|{}} destObject
  * @param {string|null} [srcType] - (proto)type of the source object
+ * @param {Boolean=true} copyNonEnumerables - copy non-enumerable elements
  */
 const copyObject = (srcObject, destObject,
-                  srcType = null) => {
+  srcType = null, copyNonEnumerables = true) => {
   // TODO check for circular references
   srcType = srcType || objectType(srcObject);
   const srcBehavior = objectBehaviors[srcType];
@@ -46,7 +50,7 @@ const copyObject = (srcObject, destObject,
   const objIterate = srcBehavior.iterate;
 
   // iterate over object's elements
-  objIterate(srcObject, (elInfo) => {
+  objIterate(srcObject, copyNonEnumerables, (elInfo) => {
     const elValue = elInfo.value, elType = elInfo.type;
     let elMayDeepCopy = objectBehaviors[elType].mayDeepCopy;
 
@@ -57,11 +61,11 @@ const copyObject = (srcObject, destObject,
       elNew = objectBehaviors[elType].makeShallow(elValue);
     }
 
-    addElement(destObject, elInfo.key, elNew);
+    addElement(destObject, elInfo.key, elNew, elInfo.descriptor);
 
     if (!elMayDeepCopy) { return; }
 
-    copyObject(elValue, elNew, elType);
+    copyObject(elValue, elNew, elType, copyNonEnumerables);
   });
 }
 
@@ -118,7 +122,7 @@ const objectBehaviors = {
       Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
       return dest;
     },
-    iterate: (array, callback) => {
+    iterate: (array, skipNonEnuerables, callback) => {
       const len = array.length;
       for (let i = 0; i < len; i++) {
         const val = array[i];
@@ -193,7 +197,7 @@ const objectBehaviors = {
     addElement: (map, key, value) => map.set(key, value),
     makeEmpty: () => new Map(),
     makeShallow: sourceMap => new Map(sourceMap),
-    iterate: (map, callback) => {
+    iterate: (map, copyNonEnumerables, callback) => {
       map.forEach((val, key) => {
         const elInfo = {
           key: key,
@@ -210,7 +214,7 @@ const objectBehaviors = {
     addElement: (set, key, value) => set.add(value),
     makeEmpty: () => new Set(),
     makeShallow: set => new Set(set),
-    iterate: (set, callback) => {
+    iterate: (set, copyNonEnumerables, callback) => {
       set.forEach(val => {
         const elInfo = {
           key: null,
@@ -224,8 +228,12 @@ const objectBehaviors = {
   "object": {
     type: Object,
     mayDeepCopy: true,
-    addElement: (obj, key, value) => {
-      obj[key] = value;
+    addElement: (obj, key, value, descriptor = undefined) => {
+      if (!descriptor) {
+        obj[key] = value;
+      } else {
+        Object.defineProperty(obj, key, descriptor);
+      }
     },
     makeEmpty: source => {
       const newObj = {};
@@ -237,8 +245,9 @@ const objectBehaviors = {
       Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
       return dest;
     },
-    iterate: (obj, callback) => {
-      const keys = Object.getOwnPropertyNames(obj);
+    iterate: (obj, copyNonEnumerables, callback) => {
+      const keys = copyNonEnumerables ?
+        Object.getOwnPropertyNames(obj) : Object.keys(obj);
       const len = keys.length;
       for (let i = 0; i < len; i++) {
         const key = keys[i];
@@ -246,7 +255,10 @@ const objectBehaviors = {
         const elInfo = {
           key: key,
           value: value,
-          type: objectType(value)
+          type: objectType(value),
+        }
+        if (copyNonEnumerables && !obj.propertyIsEnumerable(key)) {
+          elInfo.descriptor = Object.getOwnPropertyDescriptor(obj, key);
         }
         callback(elInfo);
       }
