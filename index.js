@@ -3,13 +3,20 @@
 /**
  * return a deep copy of the source
  * @param {Date|[]|{}} source
- * @param {Boolean} options.goDeep - perform deep copy
- * @param {Boolean} options.includeNonEnumerable - copy non-enumerables
+ * @param {Boolean=true} options.goDeep - perform deep copy
+ * @param {Boolean=false} options.includeNonEnumerable - copy non-enumerables
  * @return {*}
  */
-module.exports = function deepCopy(source,
+module.exports = function deepCopy (source,
   options) {
-  const {goDeep: goDeep, includeNonEnumerable: includeNonEnumerable} = options;
+  const {
+    goDeep: goDeep,
+    includeNonEnumerable: includeNonEnumerable
+  } =
+  options || {
+    goDeep: true,
+    includeNonEnumerable: false
+  }
 
   if (!goDeep) {
     return objectBehaviors[objectType(source)].makeShallow(source);;

@@ -10,4 +10,4 @@ const options = {
 
 console.log(`Begin test on "${copierName}" ...\n`);
 
-testSuite(deepCopy, options);
+testSuite(deepCopy);
