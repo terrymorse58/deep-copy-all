@@ -31,7 +31,7 @@ module.exports = function deepCopy(source, goDeep = true) {
  * copy source object to destination object
  * @param {[]|{}} srcObject
  * @param {[]|{}} destObject
- * @param {string|null} [srcType] - type of the source object
+ * @param {string|null} [srcType] - (proto)type of the source object
  */
 const copyObject = (srcObject, destObject,
                   srcType = null) => {
@@ -47,10 +47,7 @@ const copyObject = (srcObject, destObject,
 
   // iterate over object's elements
   objIterate(srcObject, (elInfo) => {
-    const {
-      value: elValue,
-      type: elType
-    } = elInfo;
+    const elValue = elInfo.value, elType = elInfo.type;
     let elMayDeepCopy = objectBehaviors[elType].mayDeepCopy;
 
     let elNew;
@@ -60,7 +57,7 @@ const copyObject = (srcObject, destObject,
       elNew = objectBehaviors[elType].makeShallow(elValue);
     }
 
-    addElement(destObject, elInfo.key, elNew, elInfo.descriptor);
+    addElement(destObject, elInfo.key, elNew);
 
     if (!elMayDeepCopy) { return; }
 
@@ -102,7 +99,7 @@ const objectType = (obj) => {
   addElement - add a new element to the object
   makeEmpty - make a new, empty object
   makeShallow - make a shallow copy of object
-  iterate - iterate over elements with callback({key,value,type,descriptor})
+  iterate - iterate over elements with callback({key,value,"type"})
   NOTE: The order is important - custom objects must be defined before the
         standard JavaScript Object.
 */
@@ -227,11 +224,8 @@ const objectBehaviors = {
   "object": {
     type: Object,
     mayDeepCopy: true,
-    addElement: (obj, key, value, descriptor = null) => {
-      Object.defineProperty(obj, key, {
-        ...descriptor,
-        value: value
-      });
+    addElement: (obj, key, value) => {
+      obj[key] = value;
     },
     makeEmpty: source => {
       const newObj = {};
@@ -248,13 +242,11 @@ const objectBehaviors = {
       const len = keys.length;
       for (let i = 0; i < len; i++) {
         const key = keys[i];
-        const descriptor = Object.getOwnPropertyDescriptor(obj, key);
-        const value = descriptor.value;
+        const value = obj[key];
         const elInfo = {
           key: key,
           value: value,
-          type: objectType(value),
-          descriptor: descriptor
+          type: objectType(value)
         }
         callback(elInfo);
       }

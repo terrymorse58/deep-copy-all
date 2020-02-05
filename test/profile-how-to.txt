@@ -1,0 +1,16 @@
+Easy profiling for Node.js Applications
+
+https://nodejs.org/en/docs/guides/simple-profiling/
+
+From command line:
+
+    $ node --prof <myapp>.js
+
+Produces a log file of the form:
+
+    isolate-0xnnnnnnnnnnnn-v8.log
+
+Process log file on the command line:
+
+    $ node --prof-process isolate-0xnnnnnnnnnnnn-v8.log > processed.txt
+

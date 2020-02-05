@@ -1,13 +1,15 @@
 const deepCopy = require('../index.js');
+const fs = require('fs');
+
+// DEEP
+const DEEP = true;
 
 console.log('\ndeepCopy tests...');
 
-for (let i = 0; i < 10; i++ ) {
+for (let i = 0; i < 1; i++ ) {
 
   const starttime = (new Date()).getTime();
 
-// DEEP
-  const DEEP = false;
   console.log(`DEEP is set to ${DEEP}`);
 
   console.log('\nTest 1:');
@@ -344,6 +346,21 @@ for (let i = 0; i < 10; i++ ) {
     '    src21: ', src21, '\n' +
     '    dest21:', dest21
   );
+
+  // benchmark test
+  console.log('\nBenchmark speed test:');
+  const RUNS = 500;
+  const json = fs.readFileSync('./test/benchmark-fixture.json');
+  if (json && json.length) {
+    const testSuite = JSON.parse(json);
+    const starttime = new Date().getTime();
+    for (let i = 0; i < RUNS; i++) {
+      const dest = deepCopy(testSuite, DEEP);
+      //console.log(`typeof dest.log: ${typeof dest.log}`);
+    }
+    const millisecs = new Date().getTime() -  starttime;
+    console.log(`Completed ${RUNS} passes in ${millisecs} milliseconds.`)
+  }
 
   console.error('deepCopy tests complete.\n');
   const endtime = (new Date()).getTime();
