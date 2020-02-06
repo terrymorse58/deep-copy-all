@@ -221,7 +221,7 @@ function testSuite (deepCopy, options) {
   }
 
 // RegExp
-  console.log('\nTest10:');
+  console.log('\nTest10: (RegExp)');
   console.log(
     '  let src10 = [1,2,/abc/,"foo"];\n' +
     `  let dest10 = deepCopy(src10, ${options});\n` +
@@ -562,6 +562,77 @@ function testSuite (deepCopy, options) {
     errors.push("Test23 " + err.toString());
   }
 
+  // ArrayCustom
+  console.log(`\nTest24:`);
+  console.log(
+    '  class ArrayCustom extends Object {\n' +
+    '    custom () {return true;}\n' +
+    '  }\n' +
+    '  let src24 = [1, 2, ArrayCustom.from(["I", "am", "foo"])];\n' +
+    `  let dest24 = deepCopy(src24, ${options});\n` +
+    `  dest24[1] = 2.00001;`
+  );
+  class ArrayCustom extends Array {
+    custom () {return true;}
+  }
+  let src24 = [1, 2, ArrayCustom.from(["I", "am", "foo"])];
+  try {
+    let dest24 = deepCopy(src24, options);
+    dest24[1] = 2.00001;
+    console.log(
+      '    src24: ', src24, '\n' +
+      '    dest24:', dest24
+    );
+    let destCustom = dest24[2];
+    if (!(destCustom instanceof ArrayCustom)) {
+      throw "Error: failed to preserve ArrayCustom";
+    }
+    if (typeof destCustom.custom !== 'function') {
+      throw "Error: failed to preserve ArrayCustom method 'custom'";
+    }
+  } catch (err) {
+    console.log('*** TEST FAILED:',err);
+    errors.push("Test24 " + err.toString());
+  }
+
+  // ArrayBuffer
+  console.log(`\nTest25 (ArrayBuffer):`);
+  console.log(
+    '  let aBuf = new ArrayBuffer(8);\n' +
+    '  let src25 = new Uint8Array(aBuf);\n' +
+    '  src25.set([1, 2, 3], 3);\n' +
+    `  let bufCopy = deepCopy(aBuf, ${options});\n` +
+    `  let dest25 = new Uint8Array(bufCopy);\n` +
+    `  dest25[0] = 128;`
+  );
+  let aBuf = new ArrayBuffer(8);
+  let src25 = new Uint8Array(aBuf);
+  src25.set([1, 2, 3], 3);
+  try {
+    let bufCopy = deepCopy(aBuf, options);
+    if (!(bufCopy instanceof ArrayBuffer)) {
+      throw "Error: failed to preserve ArrayBuffer";
+    }
+    if (bufCopy.length !== aBuf.length) {
+      throw "Erryr: failed to preserve ArrrayBuffer length";
+    }
+    let dest25 = new Uint8Array(bufCopy);
+    dest25[0] = 128;
+    console.log(
+      '    aBuf: ', aBuf, '\n' +
+      '    bufCopy:', bufCopy
+    );
+    if (dest25[3] !== src25[3]) {
+      throw "Error: failed to duplicate ArrayBuffer content";
+    }
+    if (dest25[0] === src25[0]) {
+      throw "Error: failed to make copy of ArrayBuffer";
+    }
+  } catch (err) {
+    console.log('*** TEST FAILED:',err);
+    errors.push("Test25 " + err.toString());
+  }
+
   console.log('\nerrors:',errors);
 
   //
@@ -592,6 +663,8 @@ function testSuite (deepCopy, options) {
   console.log('All tests complete.\n');
   const endtime = (new Date()).getTime();
   console.log(`\nElapsed time: ${endtime - starttime} milliseconds`);
+
+  return errors;
 
 }
 

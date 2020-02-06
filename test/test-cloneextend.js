@@ -2,8 +2,18 @@ const copierName = 'cloneextend';
 const deepCopy = require('cloneextend').clone;
 const testSuite = require('./test-suite.js');
 
-console.log(`Begin test on "${copierName}" ...\n`);
+const options = null;
 
-testSuite(deepCopy);
+console.error(`Begin test on "${copierName}" ...`);
+
+if (options) {
+  console.error(`options:`, options);
+}
+
+const errors = testSuite(deepCopy);
+
+if (errors.length) {
+  console.error(`${copierName} errors:`, errors);
+}
 
 console.error(`Test on "${copierName}" complete.\n`);

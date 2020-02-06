@@ -83,7 +83,7 @@ const objectBehaviors = {
   },
   "regexp": {
     type: RegExp,
-    makeShallow: src => src,
+    makeShallow: src => new RegExp(src),
   },
   'function': {
     type: Function,
@@ -132,6 +132,10 @@ const objectBehaviors = {
   "biguint64array": {
     type: BigUint64Array,
     makeShallow: source => BigUint64Array.from(source),
+  },
+  "arraybuffer": {
+    type: ArrayBuffer,
+    makeShallow: buffer => buffer.slice(0)
   },
   "map": {
     type: Map,

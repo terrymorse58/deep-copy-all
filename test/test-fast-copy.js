@@ -1,12 +1,8 @@
-const copierName = 'clone';
-const deepCopy = require('clone');
+const copierName = 'fast-copy-copy';
+const deepCopy = require('fast-copy');
 const testSuite = require('./test-suite.js');
 
 console.error(`Begin test on "${copierName}" ...`);
-
-if (options) {
-  console.error(`options:`, options);
-}
 
 const errors = testSuite(deepCopy);
 

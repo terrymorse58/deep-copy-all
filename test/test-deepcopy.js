@@ -2,8 +2,12 @@ const copierName = 'deepcopy';
 const deepCopy = require('deepcopy');
 const testSuite = require('./test-suite.js');
 
-console.log(`Begin test on "${copierName}" ...\n`);
+console.error(`Begin test on "${copierName}" ...`);
 
-testSuite(deepCopy);
+const errors = testSuite(deepCopy);
+
+if (errors.length) {
+  console.error(`${copierName} errors:`, errors);
+}
 
 console.error(`Test on "${copierName}" complete.\n`);

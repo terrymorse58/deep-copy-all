@@ -5,11 +5,19 @@ const testSuite = require('./test-suite.js');
 // Settings
 const options = {
   goDeep: true,
-  includeNonEnumerable: true
+  includeNonEnumerable: false
 }
 
 console.error(`Begin test on "${copierName}" ...`);
 
-testSuite(deepCopy);
+if (options) {
+  console.error(`options:`, options);
+}
+
+const errors = testSuite(deepCopy, options);
+
+if (errors.length) {
+  console.error(`${copierName} errors:`, errors);
+}
 
 console.error(`Test on "${copierName}" complete.\n`);
