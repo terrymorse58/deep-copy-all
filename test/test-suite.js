@@ -614,7 +614,7 @@ function testSuite (deepCopy, options) {
       throw "Error: failed to preserve ArrayBuffer";
     }
     if (bufCopy.length !== aBuf.length) {
-      throw "Erryr: failed to preserve ArrrayBuffer length";
+      throw "Error: failed to preserve ArrrayBuffer length";
     }
     let dest25 = new Uint8Array(bufCopy);
     dest25[0] = 128;
@@ -631,6 +631,38 @@ function testSuite (deepCopy, options) {
   } catch (err) {
     console.log('*** TEST FAILED:',err);
     errors.push("Test25 " + err.toString());
+  }
+
+  // node.js Buffer
+  console.log(`\nTest26 (node.js Buffer):`);
+  console.log(
+    '  let src26 = Buffer.from([1, 2, 3]);\n' +
+    '  let dest26 = Buffer.from(src26);\n' +
+    '  dest26[0] = 128;'
+  );
+  let src26 = Buffer.from([1, 2, 3]);
+  let dest26 = Buffer.from(src26);
+  try {
+    if (!(dest26 instanceof Buffer)) {
+      throw "Error: failed to preserve Buffer";
+    }
+    if (dest26.length !== src26.length) {
+      throw "Error: failed to preserve Buffer length";
+    }
+    dest26[0] = 128;
+    console.log(
+      '    src26: ', src26, '\n' +
+      '    dest26:', dest26
+    );
+    if (dest26[1] !== src26[1]) {
+      throw "Error: failed to copy Buffer content";
+    }
+    if (dest26[0] === src26[0]) {
+      throw "Error: changing Buffer copy changed source";
+    }
+  } catch (err) {
+    console.log('*** TEST FAILED:',err);
+    errors.push("Test26 " + err.toString());
   }
 
   console.log('\nerrors:',errors);

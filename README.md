@@ -13,23 +13,29 @@ ranking near the top on benchmark speed tests.
 
 ## Installation
 ```shell script
-$ npm install deep-copy-all --save
+$ npm install deep-copy-all
 ```
 
 ## Usage
 Node.js
 ````js
 const deepCopy = require('deep-copy-all');
-
-// ...
-
+/* ... */
 copy = deepCopy(source);
 ````
+HTML file:
+```html
+<script src="deep-copy-all.min.js"></script>
+<script>
+  /* ... */
+  copy = deepCopy(source);
+</script>
+```
 
 --- 
 
 ## `deepCopy()`
-Perform a deep copy of a JavaScript object or array.
+Perform deep copy of a JavaScript object or array.
 #### Syntax
 ````
 deepCopy(source [, options])
@@ -39,17 +45,20 @@ deepCopy(source [, options])
 &nbsp;&nbsp;&nbsp; The item to copy.
 
 `options`<br>
-&nbsp;&nbsp;&nbsp; *[optional]* - an object that modifies copying behavior.
+&nbsp;&nbsp;&nbsp; {Object} *[optional]* -  Modifies copying behavior.
 
-&nbsp;&nbsp;&nbsp; Properties of *options*:
+`options` properties:
 
-&nbsp;&nbsp;&nbsp; `goDeep` - boolean<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Perform deep copy if **true** (default).
-Set to **false** to perform shallow copy.
+&nbsp;&nbsp;&nbsp; `goDeep`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {Boolean} *[optional]* - Perform deep copy
+if **true** (default).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set to **false** to perform shallow copy.
 
-&nbsp;&nbsp;&nbsp; `includeNonEnumerable` - boolean<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Copy non-enumerable properties if
-**true**, default is **false**.
+&nbsp;&nbsp;&nbsp; `includeNonEnumerable`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {Boolean} *[optional]* -
+Copies non-enumerable properties if **true**.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Skips non-enumerable properties if
+**false** (default).
 
 #### Return value
 The copied data.
@@ -57,11 +66,12 @@ The copied data.
 ---
 
 ## Performance
-The following data types — as the source passed to deepCopy or embedded within
-the source — have been verified to be copied correctly:
+The following data types — passed directly to deepCopy or embedded within
+another object — have been verified to be copied correctly:
 
 - `Array`
 - `ArrayBuffer`
+- `Buffer` (node.js)
 - `Date`
 - `RegExp`
 - `Int8Array`

@@ -4,8 +4,12 @@ const rename = require("gulp-rename");
 
 const INDEX_FILE = 'index.js';
 const MINIFY_INDEX = 'minifyindex';
+
 const LIB_FILE = 'object-library.js';
 const MINIFY_LIB = 'minifylib';
+
+const BROWSER_FILE = 'deep-copy-all.js';
+const MINIFY_BROWSER = 'minifybrowser';
 const DEST_DIR = './';
 
 // minify INDEX_FILE
@@ -32,4 +36,16 @@ gulp.task(MINIFY_LIB, () => {
     .pipe(gulp.dest(DEST_DIR))
 });
 
-gulp.task('default', gulp.series([MINIFY_INDEX, MINIFY_LIB]));
+// minify MINIFY_BROWSER
+gulp.task(MINIFY_BROWSER, () => {
+  console.log(`Minifying ${BROWSER_FILE}...`);
+  return gulp.src(BROWSER_FILE, { allowEmpty: true })
+    .pipe(minify({noSource: true}))
+    .pipe(rename(path => {
+      path.basename = path.basename.replace(/-min/,'.min');
+      return path;
+    }))
+    .pipe(gulp.dest(DEST_DIR))
+});
+
+gulp.task('default', gulp.series([MINIFY_INDEX, MINIFY_LIB, MINIFY_BROWSER]));

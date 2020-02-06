@@ -1,3 +1,87 @@
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.deepCopy = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+"use strict";
+
+const [ isPrimitive, objectType, objectBehaviors] =
+  require('./object-library.js');
+
+/**
+ * return a deep copy of the source
+ * @param {Date|[]|{}} source
+ * @param {Boolean=true} options.goDeep - perform deep copy
+ * @param {Boolean=false} options.includeNonEnumerable - copy non-enumerables
+ * @return {*}
+ */
+module.exports = function deepCopy (source,
+  options) {
+  const {
+    goDeep: goDeep,
+    includeNonEnumerable: includeNonEnumerable
+  } =
+  options || {
+    goDeep: true,
+    includeNonEnumerable: false
+  }
+
+  if (!goDeep) {
+    return objectBehaviors[objectType(source)].makeShallow(source);;
+  }
+
+  if (!source || isPrimitive(source)) {
+    return source;
+  }
+
+  const sourceType = objectType(source);
+  const mayDeepCopy = objectBehaviors[sourceType].mayDeepCopy;
+  if (!mayDeepCopy) {
+    return objectBehaviors[sourceType].makeShallow(source);
+  }
+
+  let dest = objectBehaviors[sourceType].makeEmpty(source);
+  copyObject(source, dest, sourceType, includeNonEnumerable);
+  return dest;
+};
+
+/**
+ * copy source object to destination object
+ * @param {[]|{}} srcObject
+ * @param {[]|{}} destObject
+ * @param {string|null} [srcType] - (proto)type of the source object
+ * @param {Boolean=true} copyNonEnumerables - copy non-enumerable elements
+ */
+const copyObject = (srcObject, destObject,
+  srcType = null, copyNonEnumerables = true) => {
+  // TODO check for circular references
+  srcType = srcType || objectType(srcObject);
+  const srcBehavior = objectBehaviors[srcType];
+
+  if (!srcBehavior.mayDeepCopy) {
+    return;
+  }
+  const addElement = srcBehavior.addElement;
+  const objIterate = srcBehavior.iterate;
+
+  // iterate over object's elements
+  objIterate(srcObject, copyNonEnumerables, (elInfo) => {
+    const elValue = elInfo.value, elType = elInfo.type;
+    let elMayDeepCopy = objectBehaviors[elType].mayDeepCopy;
+
+    let elNew;
+    if (elMayDeepCopy) {
+      elNew = objectBehaviors[elType].makeEmpty(elValue);
+    } else {
+      elNew = objectBehaviors[elType].makeShallow(elValue);
+    }
+
+    addElement(destObject, elInfo.key, elNew, elInfo.descriptor);
+
+    if (!elMayDeepCopy) { return; }
+
+    copyObject(elValue, elNew, elType, copyNonEnumerables);
+  });
+}
+
+
+},{"./object-library.js":2}],2:[function(require,module,exports){
 // object library - specific behaviors for each object type
 
 // return true if the item is a primitive data type
@@ -64,7 +148,7 @@ const objectBehaviors = {
       Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
       return dest;
     },
-    iterate: (array, copyNonEnumerables, callback) => {
+    iterate: (array, skipNonEnuerables, callback) => {
       const len = array.length;
       for (let i = 0; i < len; i++) {
         const val = array[i];
@@ -90,9 +174,6 @@ const objectBehaviors = {
     makeShallow: fn => fn,
   }
 };
-
-// in case they don't exist, perform existence checks on these
-// types before adding them
 
 if (typeof Int8Array !== 'undefined') {
   Object.assign(objectBehaviors, {
@@ -264,16 +345,6 @@ if (typeof WeakMap !== 'undefined') {
   });
 }
 
-// node.js Buffer
-if (typeof Buffer !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "buffer" : {
-      type: Buffer,
-      makeShallow: buf => Buffer.from(buf)
-    }
-  });
-}
-
 // always include Object, primitive, unknown
 Object.assign(objectBehaviors, {
   "object": {
@@ -328,3 +399,5 @@ module.exports = [
   objectType,
   objectBehaviors
 ]
+},{}]},{},[1])(1)
+});
