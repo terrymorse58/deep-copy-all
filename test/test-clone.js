@@ -7,6 +7,8 @@ const options = {
   includeNonEnumerable: true
 }
 
-console.log(`Begin test on "${copierName}" ...\n`);
+console.error(`Begin test on "${copierName}" ...`);
 
 testSuite(deepCopy, options);
+
+console.error(`Test on "${copierName}" complete.\n`);

@@ -1,5 +1,5 @@
-const copierName = 'deepcopy';
-const deepCopy = require('deepcopy');
+const copierName = 'deep-copy';
+const deepCopy = require('deep-copy');
 const testSuite = require('./test-suite.js');
 
 console.log(`Begin test on "${copierName}" ...\n`);

@@ -1,8 +1,6 @@
 // test suite for deep copy
 const fs = require('fs');
 
-const BENCHMARK_RUNS = 1000;
-
 function testSuite (deepCopy, options) {
 
   let errors = [];
@@ -476,6 +474,7 @@ function testSuite (deepCopy, options) {
   }
 
 // BigUint64Array
+  let testId = 21;
   console.log('\nTest21:');
   console.log(
     '  let src21 = [ 1, 2, BigUint64Array.from([3n, 4n, 42n]) ];\n' +
@@ -498,10 +497,77 @@ function testSuite (deepCopy, options) {
     errors.push("Test21 " + err.toString());
   }
 
+  // WeakMap
+  console.log(`\nTest22:`);
+  console.log(
+    '  let wm = new WeakMap();\n' +
+    '  let obj = { foo: "I am foo" };\n' +
+    '  wm.set(obj, 42);\n' +
+    `  let dest22 = deepCopy(src22, ${{options}});\n` +
+    `  dest21[1] = 3.1416;`
+  );
+  let wm = new WeakMap();
+  let obj = { foo: "I am foo" };
+  wm.set(obj, 42);
+  let src22 = [1, 2, wm, "bar"];
+  try {
+    let dest22 = deepCopy(src22, options);
+    dest22[1] = 3.1416;
+    console.log(
+      '    src22: ', src22, '\n' +
+      '    dest22:', dest22
+    );
+    let destMap = dest22[2];
+    if (!(destMap instanceof WeakMap)) {
+      throw "Error: failed to preserve WeakMap";
+    }
+    if (!(destMap.has(obj))) {
+      throw "Error: faile to preserve WeakMap content";
+    }
+  } catch (err) {
+    console.log('*** TEST FAILED:',err);
+    errors.push("Test22 " + err.toString());
+  }
+
+  // WeakSet
+  console.log(`\nTest23:`);
+  console.log(
+    '  let ws = new WeakSet();\n' +
+    '  let obj23 = {value: "in the set"}\n' +
+    '  ws.add(obj23);\n' +
+    '  let src23 = [1, 2, ws, "bar"];\n' +
+    `  let dest23 = deepCopy(src23, ${options});\n` +
+    `  dest23[1] = 3.1416;`
+  );
+  let ws = new WeakSet();
+  let obj23 = {value: "in the set"}
+  ws.add(obj23);
+  let src23 = [1, 2, ws, "bar"];
+  try {
+    let dest23 = deepCopy(src23, options);
+    dest23[1] = 3.1416;
+    console.log(
+      '    src23: ', src23, '\n' +
+      '    dest23:', dest23
+    );
+    let destSet = dest23[2];
+    if (!(destSet instanceof WeakSet)) {
+      throw "Error: failed to preserve WeakSet";
+    }
+    if (!destSet.has(obj23)) {
+      throw "Error: failed to preserve WeakSet content";
+    }
+  } catch (err) {
+    console.log('*** TEST FAILED:',err);
+    errors.push("Test23 " + err.toString());
+  }
+
   console.log('\nerrors:',errors);
 
-
+  //
   // benchmark test
+  //
+
   console.log('\nBenchmark speed test:');
   const BENCHMARK_RUNS = 1000;
   const json = fs.readFileSync('./test/benchmark-fixture.json');
@@ -510,19 +576,20 @@ function testSuite (deepCopy, options) {
     const starttime = new Date().getTime();
     for (let i = 0; i < BENCHMARK_RUNS; i++) {
       const dest = deepCopy(testSuite, options);
-      //console.log(`typeof dest.log: ${typeof dest.log}`);
     }
     const millisecs = new Date().getTime() -  starttime;
     console.log(`Completed ${BENCHMARK_RUNS} passes in ${millisecs} ` +
       `milliseconds.`)
     if (millisecs) {
-      console.log(`Performed ` +
+      console.log(`Performance: ` +
         Math.round(BENCHMARK_RUNS/millisecs*1000)
-          .toLocaleString() + ` runs/sec`)
+          .toLocaleString() + ` runs/sec.`)
     }
+  } else {
+    console.log("Error getting JSON data to test.");
   }
 
-  console.error('cloneextend tests complete.\n');
+  console.log('All tests complete.\n');
   const endtime = (new Date()).getTime();
   console.log(`\nElapsed time: ${endtime - starttime} milliseconds`);
 
