@@ -1,17 +1,17 @@
-# deep-copy-all
-
-A fast, compact, and comprehensve method to deep copy any JavaScript data type
+# `deep-copy-all` 
+A fast, compact, and robust method to deep copy all JavaScript data types
 ---
-Commonly used deep copy routines tend to fall into two categories:
 
-- Fast and small – but not comprehensive
-- comprehensive – but large and slow
+**deep-copy-all** JavaScript object deep cloner is:
+ 
+- robust, correctly copying all
+standard JavaScript data types, as well as custom types
 
-**deep-copy-all** is comprehensive, correctly copying all JavaScript standard
-and custom types. But it is also fast and compact,
-ranking near the top on benchmark speed tests.
+- compact, about 29k minified (node.js module)
 
-## Installation
+- fast, ranking highly on common benchmark speed tests
+
+## Install
 ```shell script
 $ npm install deep-copy-all
 ```
