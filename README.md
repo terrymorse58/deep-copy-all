@@ -61,6 +61,10 @@ Copies non-enumerable properties if **true**.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Skips non-enumerable properties if
 **false** (default).
 
+&nbsp;&nbsp;&nbsp; `maxDepth`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {number} *[optional]* - the maximum
+depth to copy, default is 20
+
 #### Return value ####
 The copied data.
 

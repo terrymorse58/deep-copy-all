@@ -4,26 +4,36 @@
 const [ isPrimitive, objectType, objectBehaviors] =
   require('./object-library.js');
 
+const defaultOptions = {
+  goDeep: true,
+  includeNonEnumerable: false,
+  maxDepth: 20
+};
+
 /**
  * return a deep copy of the source
  * @param {Date|[]|{}} source
  * @param {Boolean=true} options.goDeep - perform deep copy
  * @param {Boolean=false} options.includeNonEnumerable - copy non-enumerables
+ * @param {number=20} options.maxDepth - maximum levels of depth
  * @return {*}
  */
-module.exports = function deepCopy (source,
-  options) {
-  const {
-    goDeep: goDeep,
-    includeNonEnumerable: includeNonEnumerable
-  } =
-  options || {
-    goDeep: true,
-    includeNonEnumerable: false
+module.exports = function deepCopy (source, options) {
+
+  options = options || defaultOptions;
+  if (typeof options.goDeep === 'undefined') {
+    options.goDeep = defaultOptions.goDeep;
+  }
+  if (typeof options.includeNonEnumerable === 'undefined') {
+    options.includeNonEnumerable = defaultOptions.includeNonEnumerable;
+  }
+  if (typeof options.maxDepth === 'undefined') {
+    options.maxDepth = defaultOptions.maxDepth;
   }
 
-  if (!goDeep) {
-    return objectBehaviors[objectType(source)].makeShallow(source);;
+
+  if (!options.goDeep) {
+    return objectBehaviors[objectType(source)].makeShallow(source);
   }
 
   if (!source || isPrimitive(source)) {
@@ -37,23 +47,33 @@ module.exports = function deepCopy (source,
   }
 
   let dest = objectBehaviors[sourceType].makeEmpty(source);
-  copyObject(source, dest, sourceType, includeNonEnumerable);
+  copyObject(source, dest, sourceType, 0, options);
   return dest;
-};
+}
 
 /**
  * copy source object to destination object
  * @param {[]|{}} srcObject
  * @param {[]|{}} destObject
- * @param {string|null} [srcType] - (proto)type of the source object
- * @param {Boolean=true} copyNonEnumerables - copy non-enumerable elements
+ * @param {string} srcType - (proto)type name of the source object
+ * @param {number} depth - current depth of recursion
+ * @param {object} options
+ * @param {Boolean} options.includeNonEnumerable - copy non-enumerables
+ * @param {number} options.maxDepth - maximum depth of recursion
  */
 const copyObject = (srcObject, destObject,
-  srcType = null, copyNonEnumerables = true) => {
-  // TODO check for circular references
-  srcType = srcType || objectType(srcObject);
-  const srcBehavior = objectBehaviors[srcType];
+  srcType, depth,
+  options) => {
 
+  // TODO check for circular references
+
+  depth++;
+  if (depth >= options.maxDepth) {
+    console.log('copyObject too deep, depth:',depth,',obj:',srcObject);
+    return;
+  }
+
+  const srcBehavior = objectBehaviors[srcType];
   if (!srcBehavior.mayDeepCopy) {
     return;
   }
@@ -61,7 +81,7 @@ const copyObject = (srcObject, destObject,
   const objIterate = srcBehavior.iterate;
 
   // iterate over object's elements
-  objIterate(srcObject, copyNonEnumerables, (elInfo) => {
+  objIterate(srcObject, options.includeNonEnumerable, (elInfo) => {
     const elValue = elInfo.value, elType = elInfo.type;
     let elMayDeepCopy = objectBehaviors[elType].mayDeepCopy;
 
@@ -76,7 +96,7 @@ const copyObject = (srcObject, destObject,
 
     if (!elMayDeepCopy) { return; }
 
-    copyObject(elValue, elNew, elType, copyNonEnumerables);
+    copyObject(elValue, elNew, elType, depth, options);
   });
 }
 
