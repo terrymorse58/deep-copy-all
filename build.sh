@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 echo "Making browser version with browserify:"
-browserify index.js --standalone deepCopy -o ./deep-copy-all.js
+browserify index.js --detect-globals false --standalone deepCopy \
+          -o ./deep-copy-all.js
 echo "Browserify complete."
 
 

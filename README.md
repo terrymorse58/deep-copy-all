@@ -1,24 +1,25 @@
-# `deep-copy-all` 
+# `deep-copy-all` #
+
 A fast, compact, and robust method to deep copy all JavaScript data types
 ---
 
 **deep-copy-all** JavaScript object deep cloner is:
  
-- robust, correctly copying all
+- fast – ranking highly on common benchmark speed tests
+
+- compact – about 5k (minified)
+
+- robust – correctly handling all
 standard JavaScript data types, as well as custom types
 
-- compact, about 29k minified (node.js module)
-
-- fast, ranking highly on common benchmark speed tests
-
-## Install
+## Install ##
 ```shell script
 $ npm install deep-copy-all
 ```
 
-## Usage
+## Usage ##
 Node.js
-````js
+````javascript
 const deepCopy = require('deep-copy-all');
 /* ... */
 copy = deepCopy(source);
@@ -34,13 +35,13 @@ HTML file:
 
 --- 
 
-## `deepCopy()`
+## `deepCopy()` ##
 Perform deep copy of a JavaScript object or array.
-#### Syntax
+#### Syntax ####
 ````
 deepCopy(source [, options])
 ````
-#### Parameters
+#### Parameters ####
 `source`<br>
 &nbsp;&nbsp;&nbsp; The item to copy.
 
@@ -60,12 +61,12 @@ Copies non-enumerable properties if **true**.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Skips non-enumerable properties if
 **false** (default).
 
-#### Return value
+#### Return value ####
 The copied data.
 
 ---
 
-## Performance
+## Performance ##
 The following data types — passed directly to deepCopy or embedded within
 another object — have been verified to be copied correctly:
 
@@ -109,7 +110,7 @@ them. They are copied by reference only:
 - `WeakMap`
 - `WeakSet`
 
-## Benchmark
+## Benchmark ##
 
 In a standard
 [benchmark test](https://github.com/ahmadnassri/benchmark-node-clone)
