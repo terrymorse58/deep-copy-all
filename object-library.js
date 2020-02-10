@@ -93,7 +93,7 @@ const objectBehaviors = {
     type: Error,
     makeShallow: err => {
       const errCopy = new Error(err.message);
-      errCopy.stack = '';
+      errCopy.stack = err.stack;
       return errCopy;
     }
   }

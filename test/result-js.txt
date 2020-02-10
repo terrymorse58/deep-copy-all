@@ -61,8 +61,8 @@ Test5:
   let src5 = [1, 2, new Date(), 3];
   let dest5 = deepCopy(src5, [object Object]);
   dest5[2].setMonth(7);
-    src5:  [ 1, 2, 2020-02-10T20:29:17.249Z, 3 ] 
-    dest5: [ 1, 2, 2020-08-10T19:29:17.249Z, 3 ]
+    src5:  [ 1, 2, 2020-02-10T20:42:04.763Z, 3 ] 
+    dest5: [ 1, 2, 2020-08-10T19:42:04.763Z, 3 ]
 
 Test6:
   let src6 = new Set([1,"a",2,{foo: "bar"}]);
@@ -75,8 +75,8 @@ Test7:
   let src7 = new Date();
   let dest7 = deepCopy(src7, [object Object]);
   dest7.setMonth(7);
-    src7:  2020-02-10T20:29:17.252Z 
-    dest7: 2020-08-10T19:29:17.252Z
+    src7:  2020-02-10T20:42:04.766Z 
+    dest7: 2020-08-10T19:42:04.766Z
 
 Test8:
   let src8 = ["maptest", new Map()];
@@ -239,14 +239,32 @@ Test27 (Error):
   let src27 = new Error("this is an error message");
   let dest27 = deepCopy(src27);
     src27.message:  this is an error message
+    src27.stack:  Error: this is an error message
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:678:17)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:17:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
     dest27.message: this is an error message
+    dest27.stack: Error: this is an error message
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:678:17)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:17:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
 
 errors: [ 'Test9 Error: failed to copy non-enumerable' ]
 
 Benchmark speed test:
-Completed 1000 passes in 34 milliseconds.
-Performance: 29,412 runs/sec.
+Completed 1000 passes in 49 milliseconds.
+Performance: 20,408 runs/sec.
 All tests complete.
 
 
-Elapsed time: 183 milliseconds
+Elapsed time: 84 milliseconds

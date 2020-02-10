@@ -677,13 +677,18 @@ function testSuite (deepCopy, options) {
   try {
     let src27 = new Error("this is an error message");
     console.log('    src27.message: ', src27.message);
+    console.log('    src27.stack: ', src27.stack);
     let dest27 = deepCopy(src27);
     console.log('    dest27.message:', dest27.message);
+    console.log('    dest27.stack:', dest27.stack);
     if (!(dest27 instanceof Error)) {
       throw "Error: failed to preserve Error";
     }
     if (dest27.message !== src27.message) {
       throw "Error: failed to preserve Error message";
+    }
+    if (dest27.stack !== src27.stack) {
+      throw "Error: failed to preserve Error stack";
     }
   } catch (err) {
     console.log('*** TEST FAILED:',err);
