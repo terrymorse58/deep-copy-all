@@ -176,7 +176,7 @@ const objectBehaviors = {
           key: i,
           value: val,
           type: objectType(val)
-        }
+        };
         callback(elInfo);
       }
     }
@@ -192,6 +192,14 @@ const objectBehaviors = {
   'function': {
     type: Function,
     makeShallow: fn => fn,
+  },
+  'error': {
+    type: Error,
+    makeShallow: err => {
+      const errCopy = new Error(err.message);
+      errCopy.stack = '';
+      return errCopy;
+    }
   }
 };
 

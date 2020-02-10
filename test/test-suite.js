@@ -9,6 +9,7 @@ function testSuite (deepCopy, options) {
 
   console.log(`Options are set to:`, options);
 
+  // nested array
   console.log('\nTest 1:');
   console.log(
     '  let src = [1,2,3,[[[[[4,5]]]]]];\n' +
@@ -23,6 +24,7 @@ function testSuite (deepCopy, options) {
     '    dest:', JSON.stringify(dest1, null)
   );
 
+  // array containing object containing array
   console.log('\nTest 2:');
   console.log(
     '  let src2 = ["a", 42, {name: "terry", age: "old", hobbies: ["sleeping",' +
@@ -44,6 +46,7 @@ function testSuite (deepCopy, options) {
     '    dest2:', JSON.stringify(dest2), '\n'
   );
 
+  // Map
   console.log('\nTest3:');
   console.log(
     '  let myMap = new Map();\n' +
@@ -637,11 +640,11 @@ function testSuite (deepCopy, options) {
   console.log(`\nTest26 (node.js Buffer):`);
   console.log(
     '  let src26 = Buffer.from([1, 2, 3]);\n' +
-    '  let dest26 = Buffer.from(src26);\n' +
+    '  let dest26 = deepCopy(src26);\n' +
     '  dest26[0] = 128;'
   );
   let src26 = Buffer.from([1, 2, 3]);
-  let dest26 = Buffer.from(src26);
+  let dest26 = deepCopy(src26);
   try {
     if (!(dest26 instanceof Buffer)) {
       throw "Error: failed to preserve Buffer";
@@ -663,6 +666,28 @@ function testSuite (deepCopy, options) {
   } catch (err) {
     console.log('*** TEST FAILED:',err);
     errors.push("Test26 " + err.toString());
+  }
+
+  // Error
+  console.log(`\nTest27 (Error):`);
+  console.log(
+    '  let src27 = new Error("this is an error message");\n' +
+    '  let dest27 = deepCopy(src27);'
+  );
+  try {
+    let src27 = new Error("this is an error message");
+    console.log('    src27.message: ', src27.message);
+    let dest27 = deepCopy(src27);
+    console.log('    dest27.message:', dest27.message);
+    if (!(dest27 instanceof Error)) {
+      throw "Error: failed to preserve Error";
+    }
+    if (dest27.message !== src27.message) {
+      throw "Error: failed to preserve Error message";
+    }
+  } catch (err) {
+    console.log('*** TEST FAILED:',err);
+    errors.push("Test27 " + err.toString());
   }
 
   console.log('\nerrors:',errors);

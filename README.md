@@ -78,6 +78,7 @@ another object — have been verified to be copied correctly:
 - `ArrayBuffer`
 - `Buffer` (node.js)
 - `Date`
+- `Error`
 - `RegExp`
 - `Int8Array`
 - `Uint8Array`

@@ -1,0 +1,252 @@
+Options are set to: { goDeep: true, includeNonEnumerable: false }
+
+Test 1:
+  let src = [1,2,3,[[[[[4,5]]]]]];
+  let dest = deepCopy(src, [object Object]);
+  dest[2] = 30000;
+    src:  [1,2,3,[[[[[4,5]]]]]] 
+    dest: [1,2,30000,[[[[[4,5]]]]]]
+
+Test 2:
+  let src2 = ["a", 42, {name: "terry", age: "old", hobbies: ["sleeping", "eating"]}];
+  let dest2 = deepCopy(src2, [object Object]);
+  dest2[2].age = "secret";
+  dest2[2].hobbies[0] = "cycling";
+    src2:  ["a",42,{"name":"terry","age":"old","hobbies":["sleeping","eating"]}] 
+    dest2: ["a",42,{"name":"terry","age":"secret","hobbies":["cycling","eating"]}] 
+
+
+Test3:
+  let myMap = new Map();
+  let keyString = "a string";
+  let keyObj = {};
+  let keyFunc = function () {};
+  myMap.set(keyString, 'value associated with "a string"');
+  myMap.set(keyObj, 'value associated with keyObj');
+  myMap.set(keyFunc, 'value associated with keyFunc');
+  let dest3 = deepCopy(myMap, [object Object]);
+  dest3.delete(keyFunc);
+    myMap: Map(3) {
+  'a string' => 'value associated with "a string"',
+  {} => 'value associated with keyObj',
+  [Function: keyFunc] => 'value associated with keyFunc'
+} 
+    dest3: Map(2) {
+  'a string' => 'value associated with "a string"',
+  {} => 'value associated with keyObj'
+}
+
+Test4:
+  let src4 = {nums: [1,5,[22,[[44]]]], map: myMap};
+  let dest4 = deepCopy(src4, [object Object]);
+  dest4.nums[2][0] = 220000;
+    src4: {
+  nums: [ 1, 5, [ 22, [Array] ] ],
+  map: Map(3) {
+    'a string' => 'value associated with "a string"',
+    {} => 'value associated with keyObj',
+    [Function: keyFunc] => 'value associated with keyFunc'
+  }
+} 
+    dest4: {
+  nums: [ 1, 5, [ 220000, [Array] ] ],
+  map: Map(3) {
+    'a string' => 'value associated with "a string"',
+    {} => 'value associated with keyObj',
+    [Function: keyFunc] => 'value associated with keyFunc'
+  }
+}
+
+Test5:
+  let src5 = [1, 2, new Date(), 3];
+  let dest5 = deepCopy(src5, [object Object]);
+  dest5[2].setMonth(7);
+    src5:  [ 1, 2, 2020-02-10T20:29:17.249Z, 3 ] 
+    dest5: [ 1, 2, 2020-08-10T19:29:17.249Z, 3 ]
+
+Test6:
+  let src6 = new Set([1,"a",2,{foo: "bar"}]);
+  let dest6 = deepCopy(src6, [object Object]);
+  dest6.add("new stuff");
+    src6:  Set(4) { 1, 'a', 2, { foo: 'bar' } } 
+    dest6: Set(5) { 1, 'a', 2, { foo: 'bar' }, 'new stuff' }
+
+Test7:
+  let src7 = new Date();
+  let dest7 = deepCopy(src7, [object Object]);
+  dest7.setMonth(7);
+    src7:  2020-02-10T20:29:17.252Z 
+    dest7: 2020-08-10T19:29:17.252Z
+
+Test8:
+  let src8 = ["maptest", new Map()];
+  src8[1].set("fooFn", function foo() {console.log("this is foo")});
+  let dest8 = deepCopy(src8, [object Object]);
+  dest8[1].set("barStr", "this is bar");
+    src8:  [ 'maptest', Map(1) { 'fooFn' => [Function: foo] } ] 
+    dest8: [
+  'maptest',
+  Map(2) { 'fooFn' => [Function: foo], 'barStr' => 'this is bar' }
+]
+this is foo
+
+Test9:
+  let src9 = {foo: "this is foo", bar: "this is bar"};
+  Object.defineProperty(src9, "foo", {enumerable: false});
+  let dest9 = deepCopy(src9, [object Object]);
+    src9:  { bar: 'this is bar' } 
+    dest9: { bar: 'this is bar' }
+    dest9.foo descriptor: undefined
+*** TEST FAILED error: Error: failed to copy non-enumerable
+
+Test10: (RegExp)
+  let src10 = [1,2,/abc/,"foo"];
+  let dest10 = deepCopy(src10, [object Object]);
+  dest10[3] = "BAR";
+    src10:  [ 1, 2, /abc/, 'foo' ] 
+    dest10: [ 1, 2, /abc/, 'BAR' ]
+
+Test11:
+  let src11 = [ 1, 2, Int8Array.from([3, 4, 42]) ];
+  let dest11 = deepCopy(src11, [object Object]);
+  dest11[1] = 200000;
+    src11:  [ 1, 2, Int8Array [ 3, 4, 42 ] ] 
+    dest11: [ 1, 200000, Int8Array [ 3, 4, 42 ] ]
+
+Test12:
+  let src12 = [ 1, 2, Uint8Array.from([3, 4, 42]) ];
+  let dest12 = deepCopy(src12, [object Object]);
+  dest12[1] = 200000;
+    src12:  [ 1, 2, Uint8Array [ 3, 4, 42 ] ] 
+    dest12: [ 1, 200000, Uint8Array [ 3, 4, 42 ] ]
+
+Test13:
+  let src13 = [ 1, 2, Uint8ClampedArray.from([3, 4, 42]) ];
+  let dest13 = deepCopy(src13, [object Object]);
+  dest13[1] = 42424242;
+    src13:  [ 1, 2, Uint8ClampedArray [ 3, 4, 42 ] ] 
+    dest13: [ 1, 42424242, Uint8ClampedArray [ 3, 4, 42 ] ]
+
+Test14:
+  let src14 = [ 1, 2, Int16Array.from([3, 4, 42]) ];
+  let dest14 = deepCopy(src14, [object Object]);
+  dest14[1] = 16181618;
+    src14:  [ 1, 2, Int16Array [ 3, 4, 42 ] ] 
+    dest14: [ 1, 16181618, Int16Array [ 3, 4, 42 ] ]
+
+Test15:
+  let src15 = [ 1, 2, Uint16Array.from([3, 4, 42]) ];
+  let dest15 = deepCopy(src15, [object Object]);
+  dest15[1] = 16181618;
+    src15:  [ 1, 2, Uint16Array [ 3, 4, 42 ] ] 
+    dest15: [ 1, 16181618, Uint16Array [ 3, 4, 42 ] ]
+
+Test16:
+  let src16 = [ 1, 2, Int32Array.from([3, 4, 42]) ];
+  let dest16 = deepCopy(src16, [object Object]);
+  dest16[1] = 16181618;
+    src16:  [ 1, 2, Int32Array [ 3, 4, 42 ] ] 
+    dest16: [ 1, 16181618, Int32Array [ 3, 4, 42 ] ]
+
+Test17:
+  let src17 = [ 1, 2, Uint32Array.from([3, 4, 42]) ];
+  let dest17 = deepCopy(src17, [object Object]);
+  dest17[1] = 16181618;
+    src17:  [ 1, 2, Uint32Array [ 3, 4, 42 ] ] 
+    dest17: [ 1, 16181618, Uint32Array [ 3, 4, 42 ] ]
+
+Test18:
+  let src18 = [ 1, 2, Float32Array.from([3, 4, 42]) ];
+  let dest18 = deepCopy(src18, [object Object]);
+  dest18[1] = 16181618;
+    src18:  [ 1, 2, Float32Array [ 3, 4, 42 ] ] 
+    dest18: [ 1, 16181618, Float32Array [ 3, 4, 42 ] ]
+
+Test19:
+  let src19 = [ 1, 2, Float64Array.from([3, 4, 42]) ];
+  let dest19 = deepCopy(src19, [object Object]);
+  dest19[1] = 16181618;
+    src19:  [ 1, 2, Float64Array [ 3, 4, 42 ] ] 
+    dest19: [ 1, 16181618, Float64Array [ 3, 4, 42 ] ]
+
+Test20:
+  let src20 = [ 1, 2, BigInt64Array.from([3n, 4n, 42n]) ];
+  let dest20 = deepCopy(src20, [object Object]);
+  dest20[1] = 16181618;
+    src20:  [ 1, 2, BigInt64Array [ 3n, 4n, 42n ] ] 
+    dest20: [ 1, 16181618, BigInt64Array [ 3n, 4n, 42n ] ]
+
+Test21:
+  let src21 = [ 1, 2, BigUint64Array.from([3n, 4n, 42n]) ];
+  let dest21 = deepCopy(src21, [object Object]);
+  dest21[1] = 16181618;
+    src21:  [ 1, 2, BigUint64Array [ 3n, 4n, 42n ] ] 
+    dest21: [ 1, 16181618, BigUint64Array [ 3n, 4n, 42n ] ]
+
+Test22:
+  let wm = new WeakMap();
+  let obj = { foo: "I am foo" };
+  wm.set(obj, 42);
+  let dest22 = deepCopy(src22, [object Object]);
+  dest21[1] = 3.1416;
+    src22:  [ 1, 2, WeakMap { <items unknown> }, 'bar' ] 
+    dest22: [ 1, 3.1416, WeakMap { <items unknown> }, 'bar' ]
+
+Test23:
+  let ws = new WeakSet();
+  let obj23 = {value: "in the set"}
+  ws.add(obj23);
+  let src23 = [1, 2, ws, "bar"];
+  let dest23 = deepCopy(src23, [object Object]);
+  dest23[1] = 3.1416;
+    src23:  [ 1, 2, WeakSet { <items unknown> }, 'bar' ] 
+    dest23: [ 1, 3.1416, WeakSet { <items unknown> }, 'bar' ]
+
+Test24:
+  class ArrayCustom extends Object {
+    custom () {return true;}
+  }
+  let src24 = [1, 2, ArrayCustom.from(["I", "am", "foo"])];
+  let dest24 = deepCopy(src24, [object Object]);
+  dest24[1] = 2.00001;
+    src24:  [ 1, 2, ArrayCustom [ 'I', 'am', 'foo' ] ] 
+    dest24: [ 1, 2.00001, ArrayCustom [ 'I', 'am', 'foo' ] ]
+
+Test25 (ArrayBuffer):
+  let aBuf = new ArrayBuffer(8);
+  let src25 = new Uint8Array(aBuf);
+  src25.set([1, 2, 3], 3);
+  let bufCopy = deepCopy(aBuf, [object Object]);
+  let dest25 = new Uint8Array(bufCopy);
+  dest25[0] = 128;
+    aBuf:  ArrayBuffer {
+  [Uint8Contents]: <00 00 00 01 02 03 00 00>,
+  byteLength: 8
+} 
+    bufCopy: ArrayBuffer {
+  [Uint8Contents]: <80 00 00 01 02 03 00 00>,
+  byteLength: 8
+}
+
+Test26 (node.js Buffer):
+  let src26 = Buffer.from([1, 2, 3]);
+  let dest26 = deepCopy(src26);
+  dest26[0] = 128;
+    src26:  <Buffer 01 02 03> 
+    dest26: <Buffer 80 02 03>
+
+Test27 (Error):
+  let src27 = new Error("this is an error message");
+  let dest27 = deepCopy(src27);
+    src27.message:  this is an error message
+    dest27.message: this is an error message
+
+errors: [ 'Test9 Error: failed to copy non-enumerable' ]
+
+Benchmark speed test:
+Completed 1000 passes in 34 milliseconds.
+Performance: 29,412 runs/sec.
+All tests complete.
+
+
+Elapsed time: 183 milliseconds
