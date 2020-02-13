@@ -5,7 +5,7 @@ const testSuite = require('./test-suite.js');
 // Settings
 const options = {
   goDeep: true,
-  includeNonEnumerable: false
+  includeNonEnumerable: true
 }
 
 console.error(`Begin test on "${copierName}" ...`);

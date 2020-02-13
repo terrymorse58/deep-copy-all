@@ -14,6 +14,7 @@
     "test-deepcopy": "node ./test/test-deepcopy.js > ./test/result-deepcopy.txt",
     "test-deep-copy": "node ./test/test-deep-copy.js > ./test/result-deep-copy.txt",
     "test-fast-copy": "node ./test/test-fast-copy.js > ./test/result-fast-copy.txt",
+    "test-json": "node ./test/test-JSON.js > ./test/result-JSON.txt",
     "profile": "node --prof ./test/test-js.js > ./test/result-profile.txt",
     "build": "bash build.sh"
   },

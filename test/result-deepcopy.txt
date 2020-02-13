@@ -1,15 +1,15 @@
-Options are set to: { goDeep: true, includeNonEnumerable: true }
+Options are set to: undefined
 
 Test1 (array > array):
   let src = [1,2,3,[[[[[4,5]]]]]];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[2] = 30000;
     src:  [1,2,3,[[[[[4,5]]]]]]
     dest: [1,2,30000,[[[[[4,5]]]]]]
 
 Test2 (array > object > array):
   let src = ["a", 42, {name: "terry", age: "old", hobbies: ["sleeping", "eating"]}];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[2].age = "secret";
   dest[2].hobbies[0] = "cycling";
     src:  ["a",42,{"name":"terry","age":"old","hobbies":["sleeping","eating"]}]
@@ -23,7 +23,7 @@ Test3 (Map):
   myMap.set(keyString, 'value associated with "a string"');
   myMap.set(keyObj, 'value associated with keyObj');
   myMap.set(keyFunc, 'value associated with keyFunc');
-  let dest = deepCopy(myMap, [object Object]);
+  let dest = deepCopy(myMap, undefined);
   dest.delete(keyFunc);
     myMap: Map(3) {
   'a string' => 'value associated with "a string"',
@@ -42,125 +42,134 @@ Test3 (Map):
 
 Test4 (array > Date):
   let src = [1, 2, new Date(), 3];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[2].setMonth(7);
-    src:  [ 1, 2, 2020-02-13T02:43:07.209Z, 3 ]
-    dest: [ 1, 2, 2020-02-13T02:43:07.209Z, 3 ]
-    dest: [ 1, 2, 2020-08-13T01:43:07.209Z, 3 ]
+    src:  [ 1, 2, 2020-02-13T03:13:00.744Z, 3 ]
+    dest: [ 1, 2, 2020-02-13T03:13:00.744Z, 3 ]
+    dest: [ 1, 2, 2020-08-13T02:13:00.744Z, 3 ]
 
-Test5 (Set):
+Test5 (array > BigInt):
+  let src = [1, 2, BigInt(3000000)];
+  let dest = deepCopy(src, undefined);
+  dest[2].setMonth(7);
+    src:  [ 1, 2, 3000000n ]
+    dest: [ 1, 2, 3000000n ]
+
+Test6 (Set):
   let src = new Set([1,"a",2,{foo: "bar"}]);
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest.add("new stuff");
     src:  Set(4) { 1, 'a', 2, { foo: 'bar' } }
     dest: Set(4) { 1, 'a', 2, { foo: 'bar' } }
     dest: Set(5) { 1, 'a', 2, { foo: 'bar' }, 'new stuff' }
 
-Test6 (object > non-enumerable):
+Test7 (object > non-enumerable):
   let src = {foo: "this is foo", bar: "this is bar"};
   Object.defineProperty(src, "foo", {enumerable: false});
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
     src:  { bar: 'this is bar' }
     dest:  { bar: 'this is bar' }
-    dest:  { bar: 'this is bar' }
+*** TEST7 (object > non-enumerable) FAILED: Error: failed to copy non-enumerable
 
-Test7 (object > non-enumerables):
-  let src = [1,2,/abc/,"foo"];
-  let dest = deepCopy(src, [object Object]);
+Test8 (array > RegExp):
+  let src = [1, 2, /abc/, "foo"];
+  let dest = deepCopy(src, undefined);
   dest[3] = "BAR";
     src: [ 1, 2, /abc/, 'foo' ]
     dest:  [ 1, 2, /abc/, 'foo' ]
     dest:  [ 1, 2, /abc/, 'BAR' ]
 
-Test8 (array > Int8Array):
+Test9 (array > Int8Array):
   let src = [ 1, 2, Int8Array.from([3, 4, 42]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[1] = 200000;
     src:  [ 1, 2, Int8Array [ 3, 4, 42 ] ]
     dest: [ 1, 2, Int8Array [ 3, 4, 42 ] ]
     dest: [ 1, 200000, Int8Array [ 3, 4, 42 ] ]
 
-Test9 (array > Uint8Array):
+Test10 (array > Uint8Array):
   let src = [ 1, 2, Uint8Array.from([3, 4, 42]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[1] = 200000;
     src:  [ 1, 2, Uint8Array [ 3, 4, 42 ] ]
     dest: [ 1, 2, Uint8Array [ 3, 4, 42 ] ]
     dest: [ 1, 200000, Uint8Array [ 3, 4, 42 ] ]
 
-Test10 (array > Uint8ClampedArray):
+Test11 (array > Uint8ClampedArray):
   let src = [ 1, 2, Uint8ClampedArray.from([3, 4, 42]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[1] = 42424242;
     src:  [ 1, 2, Uint8ClampedArray [ 3, 4, 42 ] ]
     dest: [ 1, 2, Uint8ClampedArray [ 3, 4, 42 ] ]
     dest: [ 1, 42424242, Uint8ClampedArray [ 3, 4, 42 ] ]
 
-Test11 (array > Int16Array):
+Test12 (array > Int16Array):
   let src = [ 1, 2, Int16Array.from([3, 4, 42]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[1] = 16181618;
     src:  [ 1, 2, Int16Array [ 3, 4, 42 ] ]
     dest: [ 1, 2, Int16Array [ 3, 4, 42 ] ]
     dest: [ 1, 16181618, Int16Array [ 3, 4, 42 ] ]
 
-Test12 (array > Uint16Array):
+Test13 (array > Uint16Array):
   let src = [ 1, 2, Uint16Array.from([3, 4, 42]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[1] = 16181618;
     src:  [ 1, 2, Uint16Array [ 3, 4, 42 ] ]
     dest: [ 1, 2, Uint16Array [ 3, 4, 42 ] ]
     dest: [ 1, 16181618, Uint16Array [ 3, 4, 42 ] ]
 
-Test13 (array > Int32Array):
+Test14 (array > Int32Array):
   let src = [ 1, 2, Int32Array.from([3, 4, 42]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[1] = 16181618;
     src:  [ 1, 2, Int32Array [ 3, 4, 42 ] ]
     dest: [ 1, 2, Int32Array [ 3, 4, 42 ] ]
     dest: [ 1, 16181618, Int32Array [ 3, 4, 42 ] ]
 
-Test14 (array > Uint32Array):
+Test15 (array > Uint32Array):
   let src = [ 1, 2, Uint32Array.from([3, 4, 42]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[1] = 16181618;
     src:  [ 1, 2, Uint32Array [ 3, 4, 42 ] ]
     dest: [ 1, 2, Uint32Array [ 3, 4, 42 ] ]
     dest: [ 1, 16181618, Uint32Array [ 3, 4, 42 ] ]
 
-Test15 (array > Float32Array):
+Test16 (array > Float32Array):
   let src = [ 1, 2, Float32Array.from([3, 4, 42]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[1] = 16181618;
     src:  [ 1, 2, Float32Array [ 3, 4, 42 ] ]
     dest: [ 1, 2, Float32Array [ 3, 4, 42 ] ]
     dest: [ 1, 16181618, Float32Array [ 3, 4, 42 ] ]
 
-Test16 (array > Float64Array):
+Test17 (array > Float64Array):
   let src = [ 1, 2, Float64Array.from([3, 4, 42]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[1] = 16181618;
     src:  [ 1, 2, Float64Array [ 3, 4, 42 ] ]
     dest: [ 1, 2, Float64Array [ 3, 4, 42 ] ]
     dest: [ 1, 16181618, Float64Array [ 3, 4, 42 ] ]
 
-Test17 (array > BigInt64Array):
+Test18 (array > BigInt64Array):
   let src = [ 1, 2, BigInt64Array.from([3n, 4n, 42n]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[2][0] = 300000n;
     src:  [ 1, 2, BigInt64Array [ 3n, 4n, 42n ] ]
     dest: [ 1, 2, BigInt64Array [ 3n, 4n, 42n ] ]
     dest: [ 1, 2, BigInt64Array [ 300000n, 4n, 42n ] ]
+*** TEST18 (array > BigInt64Array) FAILED: Error shallow copy
 
-Test18 (array > BigUint64Array):
+Test19 (array > BigUint64Array):
   let src = [ 1, 2, BigUint64Array.from([3n, 4n, 42n]) ];
-  let dest = deepCopy(src, [object Object]);
+  let dest = deepCopy(src, undefined);
   dest[2][0] = 909090909n;
     src:  [ 1, 2, BigUint64Array [ 3n, 4n, 42n ] ]
     dest: [ 1, 2, BigUint64Array [ 3n, 4n, 42n ] ]
     dest: [ 1, 2, BigUint64Array [ 909090909n, 4n, 42n ] ]
+*** TEST19 (array > BigUint64Array) FAILED: Error shallow copy
 
-Test19 (array > WeakMap):
+Test20 (array > WeakMap):
   let wm = new WeakMap();
   let obj = { foo: "I am foo" };
   wm.set(obj, 42);
@@ -172,7 +181,7 @@ Test19 (array > WeakMap):
     dest: [ 1, 2, WeakMap { <items unknown> }, 'bar' ]
     dest: [ 1, 3.1416, WeakMap { <items unknown> }, 'bar' ]
 
-Test20 (array > WeakSet):
+Test21 (array > WeakSet):
   let ws = new WeakSet();
     let obj = {value: "in the set"}
     ws.add(obj);
@@ -181,17 +190,17 @@ Test20 (array > WeakSet):
     src:  [ 1, 2, WeakSet { <items unknown> }, 'bar' ]
     dest: [ 1, 2, WeakSet { <items unknown> }, 'bar' ]
 
-Test21 (array > ArrayCustom):
+Test22 (array > ArrayCustom):
   class ArrayCustom extends Array {
       custom () {return true;}
     }
     let src = [1, 2, ArrayCustom.from(["I", "am", "foo"])];
     let dest = deepCopy(src, options);
     src:  [ 1, 2, ArrayCustom [ 'I', 'am', 'foo' ] ]
-    dest: [ 1, 2, ArrayCustom [ 'I', 'am', 'foo' ] ]
-    dest: [ 1, 2, ArrayCustom [ 'WE', 'am', 'foo' ] ]
+    dest: [ 1, 2, [ 'I', 'am', 'foo' ] ]
+*** TEST22 (array > ArrayCustom) FAILED: Error: failed to preserve ArrayCustom
 
-Test22 (array > ObjectCustom):
+Test23 (array > ObjectCustom):
   class ObjectCustom extends Object {
     custom () {return true;}
   }
@@ -202,14 +211,14 @@ Test22 (array > ObjectCustom):
   let dest = deepCopy(src, options);
   dest[2].foo = "FOO_FOO";
     src:  [ 1, 2, ObjectCustom { foo: 'bar' } ]
-    dest: [ 1, 2, ObjectCustom { foo: 'bar' } ]
-    dest: [ 1, 2, ObjectCustom { foo: 'FOO_FOO' } ]
+    dest: [ 1, 2, { foo: 'bar' } ]
+*** TEST23 (array > ObjectCustom) FAILED: Error ObjectCustom not copied
 
-Test23 (array > ArrayBuffer):
+Test24 (array > ArrayBuffer):
   let aBuf = new ArrayBuffer(8);
   let src = new Uint8Array(aBuf);
   src.set([1, 2, 3], 3);
-  let bufCopy = deepCopy(aBuf, [object Object]);
+  let bufCopy = deepCopy(aBuf, undefined);
   let dest = new Uint8Array(bufCopy);
   dest[0] = 128;
     aBuf:   ArrayBuffer {
@@ -221,20 +230,20 @@ Test23 (array > ArrayBuffer):
   byteLength: 8
 }
 
-Test24 (node.js Buffer):
+Test25 (node.js Buffer):
   let src = Buffer.from([1, 2, 3]);
   let dest = deepCopy(src);
   dest[0] = 128;
     src:  <Buffer 01 02 03>
     dest: <Buffer 01 02 03>
 
-Test25 (Error):
+Test26 (Error):
   let src = new Error("this is an error message");
   let dest = deepCopy(src);
     src.message:  this is an error message
     src.stack:  Error: this is an error message
-    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:644:15)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:17:16)
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:689:15)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-deepcopy.js:7:16)
     at Module._compile (internal/modules/cjs/loader.js:1139:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
     at Module.load (internal/modules/cjs/loader.js:988:32)
@@ -243,8 +252,8 @@ Test25 (Error):
     at internal/main/run_main_module.js:17:47
     dest.message: this is an error message
     dest.stack: Error: this is an error message
-    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:644:15)
-    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-js.js:17:16)
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:689:15)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-deepcopy.js:7:16)
     at Module._compile (internal/modules/cjs/loader.js:1139:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
     at Module.load (internal/modules/cjs/loader.js:988:32)
@@ -252,8 +261,14 @@ Test25 (Error):
     at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
     at internal/main/run_main_module.js:17:47
 
-errors: []
+errors: [
+  'Test7 (object > non-enumerable) Error: failed to copy non-enumerable',
+  'Test18 (array > BigInt64Array) Error shallow copy',
+  'Test19 (array > BigUint64Array) Error shallow copy',
+  'Test22 (array > ArrayCustom) Error: failed to preserve ArrayCustom',
+  'Test23 (array > ObjectCustom) Error ObjectCustom not copied'
+]
 All tests complete.
 
 
-Elapsed time: 30 milliseconds
+Elapsed time: 11 milliseconds

@@ -1,0 +1,290 @@
+Options are set to: undefined
+
+Test1 (array > array):
+  let src = [1,2,3,[[[[[4,5]]]]]];
+  let dest = deepCopy(src, undefined);
+  dest[2] = 30000;
+    src:  [1,2,3,[[[[[4,5]]]]]]
+    dest: [1,2,30000,[[[[[4,5]]]]]]
+
+Test2 (array > object > array):
+  let src = ["a", 42, {name: "terry", age: "old", hobbies: ["sleeping", "eating"]}];
+  let dest = deepCopy(src, undefined);
+  dest[2].age = "secret";
+  dest[2].hobbies[0] = "cycling";
+    src:  ["a",42,{"name":"terry","age":"old","hobbies":["sleeping","eating"]}]
+    dest: ["a",42,{"name":"terry","age":"secret","hobbies":["cycling","eating"]}]
+
+Test3 (Map):
+  let myMap = new Map();
+  let keyString = "a string";
+  let keyObj = {};
+  let keyFunc = function () {};
+  myMap.set(keyString, 'value associated with "a string"');
+  myMap.set(keyObj, 'value associated with keyObj');
+  myMap.set(keyFunc, 'value associated with keyFunc');
+  let dest = deepCopy(myMap, undefined);
+  dest.delete(keyFunc);
+    myMap: Map(3) {
+  'a string' => 'value associated with "a string"',
+  {} => 'value associated with keyObj',
+  [Function: keyFunc] => 'value associated with keyFunc'
+}
+    dest:  Map(3) {
+  'a string' => 'value associated with "a string"',
+  {} => 'value associated with keyObj',
+  [Function: keyFunc] => 'value associated with keyFunc'
+}
+    dest:  Map(2) {
+  'a string' => 'value associated with "a string"',
+  {} => 'value associated with keyObj'
+}
+
+Test4 (array > Date):
+  let src = [1, 2, new Date(), 3];
+  let dest = deepCopy(src, undefined);
+  dest[2].setMonth(7);
+    src:  [ 1, 2, 2020-02-13T03:12:39.153Z, 3 ]
+    dest: [ 1, 2, 2020-02-13T03:12:39.153Z, 3 ]
+    dest: [ 1, 2, 2020-08-13T02:12:39.153Z, 3 ]
+
+Test5 (array > BigInt):
+  let src = [1, 2, BigInt(3000000)];
+  let dest = deepCopy(src, undefined);
+  dest[2].setMonth(7);
+    src:  [ 1, 2, 3000000n ]
+    dest: [ 1, 2, 3000000n ]
+
+Test6 (Set):
+  let src = new Set([1,"a",2,{foo: "bar"}]);
+  let dest = deepCopy(src, undefined);
+  dest.add("new stuff");
+    src:  Set(4) { 1, 'a', 2, { foo: 'bar' } }
+    dest: Set(4) { 1, 'a', 2, { foo: 'bar' } }
+    dest: Set(5) { 1, 'a', 2, { foo: 'bar' }, 'new stuff' }
+
+Test7 (object > non-enumerable):
+  let src = {foo: "this is foo", bar: "this is bar"};
+  Object.defineProperty(src, "foo", {enumerable: false});
+  let dest = deepCopy(src, undefined);
+    src:  { bar: 'this is bar' }
+    dest:  { bar: 'this is bar' }
+*** TEST7 (object > non-enumerable) FAILED: Error: failed to copy non-enumerable
+
+Test8 (array > RegExp):
+  let src = [1, 2, /abc/, "foo"];
+  let dest = deepCopy(src, undefined);
+  dest[3] = "BAR";
+    src: [ 1, 2, /abc/, 'foo' ]
+    dest:  [ 1, 2, /abc/, 'foo' ]
+    dest:  [ 1, 2, /abc/, 'BAR' ]
+
+Test9 (array > Int8Array):
+  let src = [ 1, 2, Int8Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, undefined);
+  dest[1] = 200000;
+    src:  [ 1, 2, Int8Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Int8Array { '0': 3, '1': 4, '2': 42 } ]
+    dest: [ 1, 200000, Int8Array { '0': 3, '1': 4, '2': 42 } ]
+
+Test10 (array > Uint8Array):
+  let src = [ 1, 2, Uint8Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, undefined);
+  dest[1] = 200000;
+    src:  [ 1, 2, Uint8Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint8Array { '0': 3, '1': 4, '2': 42 } ]
+    dest: [ 1, 200000, Uint8Array { '0': 3, '1': 4, '2': 42 } ]
+
+Test11 (array > Uint8ClampedArray):
+  let src = [ 1, 2, Uint8ClampedArray.from([3, 4, 42]) ];
+  let dest = deepCopy(src, undefined);
+  dest[1] = 42424242;
+    src:  [ 1, 2, Uint8ClampedArray [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint8ClampedArray { '0': 3, '1': 4, '2': 42 } ]
+    dest: [ 1, 42424242, Uint8ClampedArray { '0': 3, '1': 4, '2': 42 } ]
+
+Test12 (array > Int16Array):
+  let src = [ 1, 2, Int16Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, undefined);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Int16Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Int16Array { '0': 3, '1': 4, '2': 42 } ]
+    dest: [ 1, 16181618, Int16Array { '0': 3, '1': 4, '2': 42 } ]
+
+Test13 (array > Uint16Array):
+  let src = [ 1, 2, Uint16Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, undefined);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Uint16Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint16Array { '0': 3, '1': 4, '2': 42 } ]
+    dest: [ 1, 16181618, Uint16Array { '0': 3, '1': 4, '2': 42 } ]
+
+Test14 (array > Int32Array):
+  let src = [ 1, 2, Int32Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, undefined);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Int32Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Int32Array { '0': 3, '1': 4, '2': 42 } ]
+    dest: [ 1, 16181618, Int32Array { '0': 3, '1': 4, '2': 42 } ]
+
+Test15 (array > Uint32Array):
+  let src = [ 1, 2, Uint32Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, undefined);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Uint32Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint32Array { '0': 3, '1': 4, '2': 42 } ]
+    dest: [ 1, 16181618, Uint32Array { '0': 3, '1': 4, '2': 42 } ]
+
+Test16 (array > Float32Array):
+  let src = [ 1, 2, Float32Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, undefined);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Float32Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Float32Array { '0': 3, '1': 4, '2': 42 } ]
+    dest: [ 1, 16181618, Float32Array { '0': 3, '1': 4, '2': 42 } ]
+
+Test17 (array > Float64Array):
+  let src = [ 1, 2, Float64Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, undefined);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Float64Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Float64Array { '0': 3, '1': 4, '2': 42 } ]
+    dest: [ 1, 16181618, Float64Array { '0': 3, '1': 4, '2': 42 } ]
+
+Test18 (array > BigInt64Array):
+  let src = [ 1, 2, BigInt64Array.from([3n, 4n, 42n]) ];
+  let dest = deepCopy(src, undefined);
+  dest[2][0] = 300000n;
+    src:  [ 1, 2, BigInt64Array [ 3n, 4n, 42n ] ]
+    dest: [ 1, 2, BigInt64Array { '0': 3n, '1': 4n, '2': 42n } ]
+    dest: [ 1, 2, BigInt64Array { '0': 300000n, '1': 4n, '2': 42n } ]
+
+Test19 (array > BigUint64Array):
+  let src = [ 1, 2, BigUint64Array.from([3n, 4n, 42n]) ];
+  let dest = deepCopy(src, undefined);
+  dest[2][0] = 909090909n;
+    src:  [ 1, 2, BigUint64Array [ 3n, 4n, 42n ] ]
+    dest: [ 1, 2, BigUint64Array { '0': 3n, '1': 4n, '2': 42n } ]
+    dest: [ 1, 2, BigUint64Array { '0': 909090909n, '1': 4n, '2': 42n } ]
+
+Test20 (array > WeakMap):
+  let wm = new WeakMap();
+  let obj = { foo: "I am foo" };
+  wm.set(obj, 42);
+  let src = [1, 2, wm, "bar"];
+  console.log('    src: ', src);
+  let dest = deepCopy(src, options);
+  dest[1] = 3.1416;
+    src:  [ 1, 2, WeakMap { <items unknown> }, 'bar' ]
+    dest: [ 1, 2, WeakMap {}, 'bar' ]
+    dest: [ 1, 3.1416, WeakMap {}, 'bar' ]
+*** TEST20 (array > WeakMap) FAILED: TypeError: Method WeakMap.prototype.has called on incompatible receiver #<WeakMap>
+    at WeakMap.has (<anonymous>)
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:513:19)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-clone.js:11:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+
+Test21 (array > WeakSet):
+  let ws = new WeakSet();
+    let obj = {value: "in the set"}
+    ws.add(obj);
+    let src = [1, 2, ws, "bar"];
+    let dest = deepCopy(src, options)
+    src:  [ 1, 2, WeakSet { <items unknown> }, 'bar' ]
+    dest: [ 1, 2, WeakSet {}, 'bar' ]
+*** TEST21 (array > WeakSet) FAILED: TypeError: Method WeakSet.prototype.has called on incompatible receiver #<WeakSet>
+    at WeakSet.has (<anonymous>)
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:541:18)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-clone.js:11:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+
+Test22 (array > ArrayCustom):
+  class ArrayCustom extends Array {
+      custom () {return true;}
+    }
+    let src = [1, 2, ArrayCustom.from(["I", "am", "foo"])];
+    let dest = deepCopy(src, options);
+    src:  [ 1, 2, ArrayCustom [ 'I', 'am', 'foo' ] ]
+    dest: [ 1, 2, [ 'I', 'am', 'foo' ] ]
+*** TEST22 (array > ArrayCustom) FAILED: Error: failed to preserve ArrayCustom
+
+Test23 (array > ObjectCustom):
+  class ObjectCustom extends Object {
+    custom () {return true;}
+  }
+  let obj = new ObjectCustom();
+  Object.assign(obj, {foo: "bar"});
+  let src = [1, 2, obj];
+  console.log('    src: ', src);
+  let dest = deepCopy(src, options);
+  dest[2].foo = "FOO_FOO";
+    src:  [ 1, 2, ObjectCustom { foo: 'bar' } ]
+    dest: [ 1, 2, ObjectCustom { foo: 'bar' } ]
+    dest: [ 1, 2, ObjectCustom { foo: 'FOO_FOO' } ]
+
+Test24 (array > ArrayBuffer):
+  let aBuf = new ArrayBuffer(8);
+  let src = new Uint8Array(aBuf);
+  src.set([1, 2, 3], 3);
+  let bufCopy = deepCopy(aBuf, undefined);
+  let dest = new Uint8Array(bufCopy);
+  dest[0] = 128;
+    aBuf:   ArrayBuffer {
+  [Uint8Contents]: <00 00 00 01 02 03 00 00>,
+  byteLength: 8
+}
+    bufCopy: ArrayBuffer {}
+*** TEST24 (array > ArrayBuffer) FAILED: Error: failed to duplicate ArrayBuffer content
+
+Test25 (node.js Buffer):
+  let src = Buffer.from([1, 2, 3]);
+  let dest = deepCopy(src);
+  dest[0] = 128;
+    src:  <Buffer 01 02 03>
+    dest: <Buffer 01 02 03>
+
+Test26 (Error):
+  let src = new Error("this is an error message");
+  let dest = deepCopy(src);
+    src.message:  this is an error message
+    src.stack:  Error: this is an error message
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:689:15)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-clone.js:11:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+    dest.message: this is an error message
+    dest.stack: Error: this is an error message
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:689:15)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-clone.js:11:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+
+errors: [
+  'Test7 (object > non-enumerable) Error: failed to copy non-enumerable',
+  'Test20 (array > WeakMap) TypeError: Method WeakMap.prototype.has called on incompatible receiver #<WeakMap>',
+  'Test21 (array > WeakSet) TypeError: Method WeakSet.prototype.has called on incompatible receiver #<WeakSet>',
+  'Test22 (array > ArrayCustom) Error: failed to preserve ArrayCustom',
+  'Test24 (array > ArrayBuffer) Error: failed to duplicate ArrayBuffer content'
+]
+All tests complete.
+
+
+Elapsed time: 13 milliseconds

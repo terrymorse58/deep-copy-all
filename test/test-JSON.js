@@ -1,14 +1,18 @@
-const copierName = 'clone';
-const deepCopy = require('clone');
+
+const copierName = 'JSON.*';
+const deepCopy = (src) => JSON.parse(JSON.stringify(src));
 const testSuite = require('./test-suite.js');
+
+// Settings
+const options = null;
 
 console.error(`Begin test on "${copierName}" ...`);
 
-if (typeof options !== 'undefined') {
+if (options) {
   console.error(`options:`, options);
 }
 
-const errors = testSuite(deepCopy);
+const errors = testSuite(deepCopy, options);
 
 if (errors.length) {
   console.error(`${copierName} errors:`, errors);

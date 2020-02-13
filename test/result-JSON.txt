@@ -1,0 +1,305 @@
+Options are set to: null
+
+Test1 (array > array):
+  let src = [1,2,3,[[[[[4,5]]]]]];
+  let dest = deepCopy(src, null);
+  dest[2] = 30000;
+    src:  [1,2,3,[[[[[4,5]]]]]]
+    dest: [1,2,30000,[[[[[4,5]]]]]]
+
+Test2 (array > object > array):
+  let src = ["a", 42, {name: "terry", age: "old", hobbies: ["sleeping", "eating"]}];
+  let dest = deepCopy(src, null);
+  dest[2].age = "secret";
+  dest[2].hobbies[0] = "cycling";
+    src:  ["a",42,{"name":"terry","age":"old","hobbies":["sleeping","eating"]}]
+    dest: ["a",42,{"name":"terry","age":"secret","hobbies":["cycling","eating"]}]
+
+Test3 (Map):
+  let myMap = new Map();
+  let keyString = "a string";
+  let keyObj = {};
+  let keyFunc = function () {};
+  myMap.set(keyString, 'value associated with "a string"');
+  myMap.set(keyObj, 'value associated with keyObj');
+  myMap.set(keyFunc, 'value associated with keyFunc');
+  let dest = deepCopy(myMap, null);
+  dest.delete(keyFunc);
+    myMap: Map(3) {
+  'a string' => 'value associated with "a string"',
+  {} => 'value associated with keyObj',
+  [Function: keyFunc] => 'value associated with keyFunc'
+}
+    dest:  {}
+*** TEST3 (Map) FAILED: Error: failed to create Map
+
+Test4 (array > Date):
+  let src = [1, 2, new Date(), 3];
+  let dest = deepCopy(src, null);
+  dest[2].setMonth(7);
+    src:  [ 1, 2, 2020-02-13T03:11:54.260Z, 3 ]
+    dest: [ 1, 2, '2020-02-13T03:11:54.260Z', 3 ]
+*** TEST4 (array > Date) FAILED: Error: failed to preserve Date
+
+Test5 (array > BigInt):
+  let src = [1, 2, BigInt(3000000)];
+  let dest = deepCopy(src, null);
+  dest[2].setMonth(7);
+    src:  [ 1, 2, 3000000n ]
+*** TEST5 (array > BigInt) FAILED: TypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at deepCopy (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-JSON.js:3:43)
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:141:16)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-JSON.js:15:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+
+Test6 (Set):
+  let src = new Set([1,"a",2,{foo: "bar"}]);
+  let dest = deepCopy(src, null);
+  dest.add("new stuff");
+    src:  Set(4) { 1, 'a', 2, { foo: 'bar' } }
+    dest: {}
+*** TEST6 (Set) FAILED: Error: copy is not Set
+
+Test7 (object > non-enumerable):
+  let src = {foo: "this is foo", bar: "this is bar"};
+  Object.defineProperty(src, "foo", {enumerable: false});
+  let dest = deepCopy(src, null);
+    src:  { bar: 'this is bar' }
+    dest:  { bar: 'this is bar' }
+*** TEST7 (object > non-enumerable) FAILED: Error: failed to copy non-enumerable
+
+Test8 (array > RegExp):
+  let src = [1, 2, /abc/, "foo"];
+  let dest = deepCopy(src, null);
+  dest[3] = "BAR";
+    src: [ 1, 2, /abc/, 'foo' ]
+    dest:  [ 1, 2, {}, 'foo' ]
+*** TEST8 (array > RegExp) FAILED: Error: copied /abc/ not RegExp
+
+Test9 (array > Int8Array):
+  let src = [ 1, 2, Int8Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, null);
+  dest[1] = 200000;
+    src:  [ 1, 2, Int8Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, { '0': 3, '1': 4, '2': 42 } ]
+*** TEST9 (array > Int8Array) FAILED: Error: failed to preserve Int8Array
+
+Test10 (array > Uint8Array):
+  let src = [ 1, 2, Uint8Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, null);
+  dest[1] = 200000;
+    src:  [ 1, 2, Uint8Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, { '0': 3, '1': 4, '2': 42 } ]
+*** TEST10 (array > Uint8Array) FAILED: Error: Uint8Array not copied
+
+Test11 (array > Uint8ClampedArray):
+  let src = [ 1, 2, Uint8ClampedArray.from([3, 4, 42]) ];
+  let dest = deepCopy(src, null);
+  dest[1] = 42424242;
+    src:  [ 1, 2, Uint8ClampedArray [ 3, 4, 42 ] ]
+    dest: [ 1, 2, { '0': 3, '1': 4, '2': 42 } ]
+*** TEST11 (array > Uint8ClampedArray) FAILED: Error: copy not Uint8ClampedArray
+
+Test12 (array > Int16Array):
+  let src = [ 1, 2, Int16Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, null);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Int16Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, { '0': 3, '1': 4, '2': 42 } ]
+*** TEST12 (array > Int16Array) FAILED: Error Int16Array not copied
+
+Test13 (array > Uint16Array):
+  let src = [ 1, 2, Uint16Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, null);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Uint16Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, { '0': 3, '1': 4, '2': 42 } ]
+*** TEST13 (array > Uint16Array) FAILED: Error: Uint16Array not copied
+
+Test14 (array > Int32Array):
+  let src = [ 1, 2, Int32Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, null);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Int32Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, { '0': 3, '1': 4, '2': 42 } ]
+*** TEST14 (array > Int32Array) FAILED: Error: failed to preserve Int32Array
+
+Test15 (array > Uint32Array):
+  let src = [ 1, 2, Uint32Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, null);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Uint32Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, { '0': 3, '1': 4, '2': 42 } ]
+*** TEST15 (array > Uint32Array) FAILED: Error: Uint32Array not copied
+
+Test16 (array > Float32Array):
+  let src = [ 1, 2, Float32Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, null);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Float32Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, { '0': 3, '1': 4, '2': 42 } ]
+*** TEST16 (array > Float32Array) FAILED: Error Float32Array not copied
+
+Test17 (array > Float64Array):
+  let src = [ 1, 2, Float64Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, null);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Float64Array [ 3, 4, 42 ] ]
+    dest: [ 1, 2, { '0': 3, '1': 4, '2': 42 } ]
+*** TEST17 (array > Float64Array) FAILED: Error: Float64Array not copied
+
+Test18 (array > BigInt64Array):
+  let src = [ 1, 2, BigInt64Array.from([3n, 4n, 42n]) ];
+  let dest = deepCopy(src, null);
+  dest[2][0] = 300000n;
+    src:  [ 1, 2, BigInt64Array [ 3n, 4n, 42n ] ]
+*** TEST18 (array > BigInt64Array) FAILED: TypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at deepCopy (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-JSON.js:3:43)
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:450:16)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-JSON.js:15:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+
+Test19 (array > BigUint64Array):
+  let src = [ 1, 2, BigUint64Array.from([3n, 4n, 42n]) ];
+  let dest = deepCopy(src, null);
+  dest[2][0] = 909090909n;
+    src:  [ 1, 2, BigUint64Array [ 3n, 4n, 42n ] ]
+*** TEST19 (array > BigUint64Array) FAILED: TypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at deepCopy (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-JSON.js:3:43)
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:474:16)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-JSON.js:15:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+
+Test20 (array > WeakMap):
+  let wm = new WeakMap();
+  let obj = { foo: "I am foo" };
+  wm.set(obj, 42);
+  let src = [1, 2, wm, "bar"];
+  console.log('    src: ', src);
+  let dest = deepCopy(src, options);
+  dest[1] = 3.1416;
+    src:  [ 1, 2, WeakMap { <items unknown> }, 'bar' ]
+    dest: [ 1, 2, {}, 'bar' ]
+*** TEST20 (array > WeakMap) FAILED: Error: WeakMap not copied
+
+Test21 (array > WeakSet):
+  let ws = new WeakSet();
+    let obj = {value: "in the set"}
+    ws.add(obj);
+    let src = [1, 2, ws, "bar"];
+    let dest = deepCopy(src, options)
+    src:  [ 1, 2, WeakSet { <items unknown> }, 'bar' ]
+    dest: [ 1, 2, {}, 'bar' ]
+*** TEST21 (array > WeakSet) FAILED: Error: failed to preserve WeakSet
+
+Test22 (array > ArrayCustom):
+  class ArrayCustom extends Array {
+      custom () {return true;}
+    }
+    let src = [1, 2, ArrayCustom.from(["I", "am", "foo"])];
+    let dest = deepCopy(src, options);
+    src:  [ 1, 2, ArrayCustom [ 'I', 'am', 'foo' ] ]
+    dest: [ 1, 2, [ 'I', 'am', 'foo' ] ]
+*** TEST22 (array > ArrayCustom) FAILED: Error: failed to preserve ArrayCustom
+
+Test23 (array > ObjectCustom):
+  class ObjectCustom extends Object {
+    custom () {return true;}
+  }
+  let obj = new ObjectCustom();
+  Object.assign(obj, {foo: "bar"});
+  let src = [1, 2, obj];
+  console.log('    src: ', src);
+  let dest = deepCopy(src, options);
+  dest[2].foo = "FOO_FOO";
+    src:  [ 1, 2, ObjectCustom { foo: 'bar' } ]
+    dest: [ 1, 2, { foo: 'bar' } ]
+*** TEST23 (array > ObjectCustom) FAILED: Error ObjectCustom not copied
+
+Test24 (array > ArrayBuffer):
+  let aBuf = new ArrayBuffer(8);
+  let src = new Uint8Array(aBuf);
+  src.set([1, 2, 3], 3);
+  let bufCopy = deepCopy(aBuf, null);
+  let dest = new Uint8Array(bufCopy);
+  dest[0] = 128;
+    aBuf:   ArrayBuffer {
+  [Uint8Contents]: <00 00 00 01 02 03 00 00>,
+  byteLength: 8
+}
+    bufCopy: {}
+*** TEST24 (array > ArrayBuffer) FAILED: Error: ArrayBuffer not copied
+
+Test25 (node.js Buffer):
+  let src = Buffer.from([1, 2, 3]);
+  let dest = deepCopy(src);
+  dest[0] = 128;
+    src:  <Buffer 01 02 03>
+    dest: { type: 'Buffer', data: [ 1, 2, 3 ] }
+*** TEST25 (node.js Buffer) FAILED: Error: failed to preserve Buffer
+
+Test26 (Error):
+  let src = new Error("this is an error message");
+  let dest = deepCopy(src);
+    src.message:  this is an error message
+    src.stack:  Error: this is an error message
+    at testSuite (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-suite.js:689:15)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/templates/deep-copy-all/test/test-JSON.js:15:16)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+    dest.message: undefined
+    dest.stack: undefined
+*** TEST26 (Error) FAILED: Error: failed to preserve Error
+
+errors: [
+  'Test3 (Map) Error: failed to create Map',
+  'Test4 (array > Date) Error: failed to preserve Date',
+  'Test5 (array > BigInt) TypeError: Do not know how to serialize a BigInt',
+  'Test6 (Set) Error: copy is not Set',
+  'Test7 (object > non-enumerable) Error: failed to copy non-enumerable',
+  'Test8 (array > RegExp) Error: copied /abc/ not RegExp',
+  'Test9 (array > Int8Array) Error: failed to preserve Int8Array',
+  'Test10 (array > Uint8Array) Error: Uint8Array not copied',
+  'Test11 (array > Uint8ClampedArray) Error: copy not Uint8ClampedArray',
+  'Test12 (array > Int16Array) Error Int16Array not copied',
+  'Test13 (array > Uint16Array) Error: Uint16Array not copied',
+  'Test14 (array > Int32Array) Error: failed to preserve Int32Array',
+  'Test15 (array > Uint32Array) Error: Uint32Array not copied',
+  'Test16 (array > Float32Array) Error Float32Array not copied',
+  'Test17 (array > Float64Array) Error: Float64Array not copied',
+  'Test18 (array > BigInt64Array) TypeError: Do not know how to serialize a BigInt',
+  'Test19 (array > BigUint64Array) TypeError: Do not know how to serialize a BigInt',
+  'Test20 (array > WeakMap) Error: WeakMap not copied',
+  'Test21 (array > WeakSet) Error: failed to preserve WeakSet',
+  'Test22 (array > ArrayCustom) Error: failed to preserve ArrayCustom',
+  'Test23 (array > ObjectCustom) Error ObjectCustom not copied',
+  'Test24 (array > ArrayBuffer) Error: ArrayBuffer not copied',
+  'Test25 (node.js Buffer) Error: failed to preserve Buffer',
+  'Test26 (Error) Error: failed to preserve Error'
+]
+All tests complete.
+
+
+Elapsed time: 10 milliseconds
