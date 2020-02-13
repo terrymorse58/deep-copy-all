@@ -62,28 +62,14 @@ const copyObject = (srcObject, args) => {
  */
 function deepCopy (source, options = defaultOpts) {
 
-  for (const optName in defaultOpts) {
+  Object.keys(defaultOpts).forEach(optName => {
     if (typeof options[optName] === 'undefined') {
       options[optName] = defaultOpts[optName];
     }
-  }
-  console.log('deepCopy options:', options);
-  
-  // options = options || defaultOpts;
-  // if (typeof options.goDeep === 'undefined') {
-  //   options.goDeep = defaultOpts.goDeep;
-  // }
-  // if (typeof options.includeNonEnumerable === 'undefined') {
-  //   options.includeNonEnumerable = defaultOpts.includeNonEnumerable;
-  // }
-  // if (typeof options.maxDepth === 'undefined') {
-  //   options.maxDepth = defaultOpts.maxDepth;
-  // }
+  });
 
   // don't copy primitives
-  if (!source || isPrimitive(source)) {
-    return source;
-  }
+  if (isPrimitive(source)) { return source;}
 
   // shallow copy option
   if (!options.goDeep) {
@@ -100,13 +86,9 @@ function deepCopy (source, options = defaultOpts) {
 
   // do recursive deep copy
   let dest = objectBehaviors[sourceType].makeEmpty(source);
-  copyObject(source, {
-      destObject: dest,
-      srcType: sourceType,
-      depth: 0,
-      options: options
-    });
+  copyObject(source, {destObject: dest, srcType: sourceType,
+      depth: 0, options: options });
   return dest;
 }
-
+q
 module.exports = deepCopy;
