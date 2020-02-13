@@ -4,7 +4,7 @@ const testSuite = require('./test-suite.js');
 
 console.error(`Begin test on "${copierName}" ...`);
 
-const errors = testSuite(deepCopy);
+const errors = testSuite(copierName, deepCopy);
 
 if (errors.length) {
   console.error(`${copierName} errors:`, errors);

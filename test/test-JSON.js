@@ -12,7 +12,7 @@ if (options) {
   console.error(`options:`, options);
 }
 
-const errors = testSuite(deepCopy, options);
+const errors = testSuite(copierName, deepCopy, options);
 
 if (errors.length) {
   console.error(`${copierName} errors:`, errors);

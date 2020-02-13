@@ -32,6 +32,51 @@ HTML file:
   copy = deepCopy(source);
 </script>
 ```
+---
+## Comparison
+The accuracy of **deep-copy-all** compares well against other deep copying
+ packages.
+ 
+ Legend: &nbsp; &nbsp; ☑️ - deep copy
+ &nbsp; &nbsp; 🚧 - shallow copy
+ &nbsp; &nbsp; 🗑️ - data loss
+ &nbsp; &nbsp; ⚠️ - Error
+
+ data type         | JSON.* | ce  | d-c | dc  | cl  | f-c | deep-copy-all
+ ----------------- | ------ | --- | --- | --- | --- | --- | -------------
+ Array             | ☑️        | ☑️           |☑️|☑️|☑️|☑️|☑️
+ ArrayBuffer       | 🗑️ | 🗑️    |🗑️|☑️|🗑️|☑️|☑️
+ BigInt            | ⚠️     | ☑️           |☑️|☑️|☑️|☑️|☑️
+ BigInt64Array     | ⚠️     | 🗑️    |🗑️|🚧|☑️|☑️|☑️
+ BigUint64Array    | ⚠️     | 🗑️    |🗑️|🚧|☑️|☑️|☑️
+ Buffer            | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Date              | 🗑️ | ☑️           |☑️|☑️|☑️|☑️|☑️
+ Error             | 🗑️ | 🗑️    |🗑️|🚧|☑️|🚧|☑️
+ Float32Array      | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Float64Array      | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Int8Array         | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Int8Array         | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Int32Array        | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Map               | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Object            | ☑️        | ☑️           |☑️|☑️|☑️|☑️|☑️
+ RegExp            | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Set               | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Uint8Array        | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Uint8ClampedArray | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Uint16Array       | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ Uint32Array       | 🗑️ | 🗑️    |🗑️|☑️|☑️|☑️|☑️
+ WeakMap           | 🗑️ | 🗑️    |🗑️|🚧|⚠️|🚧|🚧
+ WeakSet           | 🗑️ | 🗑️    |🗑️|🚧|⚠️|🚧|🚧
+ enumerable:false  | 🗑️ | 🗑️    |🗑️|🗑️|🗑️|🗑️|☑️
+ custom Array      | 🗑️ | 🗑️    |🗑️|🗑️|🗑️|☑️|☑️
+ custom Object     | 🗑️ | 🗑️    |🗑️|🗑️|☑️|☑️|☑️
+
+JSON.* - JSON.parse(JSON.stringify())<br>
+ce - [cloneextend](https://www.npmjs.com/package/cloneextend)<br>
+d-c - [deep-copy](https://www.npmjs.com/package/cloneextend)<br>
+dc - [deepcopy](https://www.npmjs.com/package/deepcopy)<br>
+cl - [clone](https://www.npmjs.com/package/clone)<br>
+f-c - [fast-copy](https://www.npmjs.com/package/fast-copy)
 
 --- 
 
@@ -108,7 +153,7 @@ values are copied:
 - `Symbol`
 - `null`
 
-The following object types are not copied, as there is no known way to copy
+The following object types are not deep copied, as no way has been found to copy
 them. They are copied by reference only:
 
 - `Function`
