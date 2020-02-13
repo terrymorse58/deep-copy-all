@@ -3,7 +3,7 @@
 const [ isPrimitive, objectType, objectBehaviors] =
   require('./object-library.js');
 
-const defaultOptions = {
+const defaultOpts = {
   goDeep: true,
   includeNonEnumerable: false,
   maxDepth: 20
@@ -19,9 +19,12 @@ const defaultOptions = {
  * @param {Boolean} options.includeNonEnumerable - copy non-enumerables
  * @param {number} options.maxDepth - maximum depth of recursion
  */
-const copyObject = (srcObject, destObject,
-  srcType, depth,
-  options) => {
+const copyObject = (srcObject, [
+  destObject,
+  srcType,
+  depth,
+  options
+]) => {
 
   // TODO check for circular references
 
@@ -54,48 +57,61 @@ const copyObject = (srcObject, destObject,
 
     if (!elMayDeepCopy) { return; }
 
-    copyObject(elValue, elNew, elType, depth, options);
+    copyObject(elValue, [elNew, elType, depth, options]);
   });
 }
 
 /**
  * return a deep copy of the source
  * @param {Date|[]|{}} source
+ * @param {Object} options
  * @param {Boolean=true} options.goDeep - perform deep copy
  * @param {Boolean=false} options.includeNonEnumerable - copy non-enumerables
  * @param {number=20} options.maxDepth - maximum levels of depth
  * @return {*}
  */
-module.exports = function deepCopy (source, options) {
+function deepCopy (source, options = defaultOpts) {
 
-  options = options || defaultOptions;
-  if (typeof options.goDeep === 'undefined') {
-    options.goDeep = defaultOptions.goDeep;
+  for (const optName in defaultOpts) {
+    if (typeof options[optName] === 'undefined') {
+      options[optName] = defaultOpts[optName];
+    }
   }
-  if (typeof options.includeNonEnumerable === 'undefined') {
-    options.includeNonEnumerable = defaultOptions.includeNonEnumerable;
-  }
-  if (typeof options.maxDepth === 'undefined') {
-    options.maxDepth = defaultOptions.maxDepth;
-  }
+  console.log('deepCopy options:', options);
+  
+  // options = options || defaultOpts;
+  // if (typeof options.goDeep === 'undefined') {
+  //   options.goDeep = defaultOpts.goDeep;
+  // }
+  // if (typeof options.includeNonEnumerable === 'undefined') {
+  //   options.includeNonEnumerable = defaultOpts.includeNonEnumerable;
+  // }
+  // if (typeof options.maxDepth === 'undefined') {
+  //   options.maxDepth = defaultOpts.maxDepth;
+  // }
 
-
-  if (!options.goDeep) {
-    return objectBehaviors[objectType(source)].makeShallow(source);
-  }
-
+  // don't copy primitives
   if (!source || isPrimitive(source)) {
     return source;
   }
 
+  // shallow copy option
+  if (!options.goDeep) {
+    return objectBehaviors[objectType(source)].makeShallow(source);
+  }
+
   const sourceType = objectType(source);
   const mayDeepCopy = objectBehaviors[sourceType].mayDeepCopy;
+
+  // not deep copyable, do a shallow copy
   if (!mayDeepCopy) {
     return objectBehaviors[sourceType].makeShallow(source);
   }
 
+  // do recursive deep copy
   let dest = objectBehaviors[sourceType].makeEmpty(source);
-  copyObject(source, dest, sourceType, 0, options);
+  copyObject(source, [dest, sourceType, 0, options]);
   return dest;
 };
 
+module.exports = deepCopy;
