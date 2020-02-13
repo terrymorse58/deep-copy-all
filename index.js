@@ -17,53 +17,39 @@ const defaultOpts = {
  * @property {number} depth
  * @property {Object} options
  */
+
 /**
- * copy source object to destination object
+ * copy source object to destination object recursively
  * @param {[]|{}} srcObject
  * @param {CopyArgs} args
  */
 const copyObject = (srcObject, args) => {
   let {destObject, srcType, depth, options} = args;
 
-  // TODO check for circular references
-
-  depth++;
-  if (depth >= options.maxDepth) {
-    // console.log('copyObject too deep, depth:',depth,',obj:',srcObject);
-    return;
-  }
+  if (++depth >= options.maxDepth) { return; }
 
   const srcBehavior = objectBehaviors[srcType];
-  if (!srcBehavior.mayDeepCopy) {
-    return;
-  }
-  const addElement = srcBehavior.addElement;
-  const objIterate = srcBehavior.iterate;
+  if (!srcBehavior.mayDeepCopy) { return; }
+
+  const addElementToSource = srcBehavior.addElement;
 
   // iterate over object's elements
-  objIterate(srcObject, options.includeNonEnumerable, (elInfo) => {
+  srcBehavior.iterate(srcObject, options.includeNonEnumerable, (elInfo) => {
     const elValue = elInfo.value, elType = elInfo.type;
     let elMayDeepCopy = objectBehaviors[elType].mayDeepCopy;
 
-    let elNew;
-    if (elMayDeepCopy) {
-      elNew = objectBehaviors[elType].makeEmpty(elValue);
-    } else {
-      elNew = objectBehaviors[elType].makeShallow(elValue);
-    }
+    let elNew = (elMayDeepCopy)
+      ? objectBehaviors[elType].makeEmpty(elValue)
+      : objectBehaviors[elType].makeShallow(elValue);
 
-    addElement(destObject, elInfo.key, elNew, elInfo.descriptor);
+    addElementToSource(destObject, elInfo.key, elNew, elInfo.descriptor);
 
     if (!elMayDeepCopy) { return; }
 
-    copyObject(elValue, {
-      destObject: elNew,
-      srcType: elType,
-      depth: depth,
-      options: options
-    });
+    copyObject(elValue, { destObject: elNew, srcType: elType,
+      depth: depth, options: options });
   });
-}
+};
 
 /**
  * return a deep copy of the source
