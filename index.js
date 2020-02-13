@@ -10,21 +10,20 @@ const defaultOpts = {
 };
 
 /**
+ * args to copyObject
+ * @typedef {Object} CopyArgs
+ * @property {Object} destObject
+ * @property {string} srcType
+ * @property {number} depth
+ * @property {Object} options
+ */
+/**
  * copy source object to destination object
  * @param {[]|{}} srcObject
- * @param {[]|{}} destObject
- * @param {string} srcType - (proto)type name of the source object
- * @param {number} depth - current depth of recursion
- * @param {object} options
- * @param {Boolean} options.includeNonEnumerable - copy non-enumerables
- * @param {number} options.maxDepth - maximum depth of recursion
+ * @param {CopyArgs} args
  */
-const copyObject = (srcObject, [
-  destObject,
-  srcType,
-  depth,
-  options
-]) => {
+const copyObject = (srcObject, args) => {
+  let {destObject, srcType, depth, options} = args;
 
   // TODO check for circular references
 
@@ -57,7 +56,12 @@ const copyObject = (srcObject, [
 
     if (!elMayDeepCopy) { return; }
 
-    copyObject(elValue, [elNew, elType, depth, options]);
+    copyObject(elValue, {
+      destObject: elNew,
+      srcType: elType,
+      depth: depth,
+      options: options
+    });
   });
 }
 
@@ -110,8 +114,13 @@ function deepCopy (source, options = defaultOpts) {
 
   // do recursive deep copy
   let dest = objectBehaviors[sourceType].makeEmpty(source);
-  copyObject(source, [dest, sourceType, 0, options]);
+  copyObject(source, {
+      destObject: dest,
+      srcType: sourceType,
+      depth: 0,
+      options: options
+    });
   return dest;
-};
+}
 
 module.exports = deepCopy;
