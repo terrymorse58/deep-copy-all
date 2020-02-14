@@ -4,113 +4,108 @@
 const [ isPrimitive, objectType, objectBehaviors] =
   require('./object-library.js');
 
-const defaultOptions = {
+const defaultOpts = {
   goDeep: true,
   includeNonEnumerable: false,
   maxDepth: 20
 };
 
 /**
- * copy source object to destination object
- * @param {[]|{}} srcObject
- * @param {[]|{}} destObject
- * @param {string} srcType - (proto)type name of the source object
- * @param {number} depth - current depth of recursion
- * @param {object} options
- * @param {Boolean} options.includeNonEnumerable - copy non-enumerables
- * @param {number} options.maxDepth - maximum depth of recursion
+ * args to copyObject
+ * @typedef {Object} CopyArgs
+ * @property {Object} destObject
+ * @property {string} srcType
+ * @property {number} depth
+ * @property {Object} options
  */
-const copyObject = (srcObject, destObject,
-  srcType, depth,
-  options) => {
 
-  // TODO check for circular references
+/**
+ * copy source object to destination object recursively
+ * @param {[]|{}} srcObject
+ * @param {CopyArgs} args
+ */
+const copyObject = (srcObject, args) => {
+  let {destObject, srcType, depth, options} = args;
 
-  depth++;
-  if (depth >= options.maxDepth) {
-    // console.log('copyObject too deep, depth:',depth,',obj:',srcObject);
-    return;
-  }
+  if (++depth >= options.maxDepth) { return; }
 
   const srcBehavior = objectBehaviors[srcType];
-  if (!srcBehavior.mayDeepCopy) {
-    return;
-  }
-  const addElement = srcBehavior.addElement;
-  const objIterate = srcBehavior.iterate;
+  if (!srcBehavior.mayDeepCopy) { return; }
+
+  const addElementToSource = srcBehavior.addElement;
 
   // iterate over object's elements
-  objIterate(srcObject, options.includeNonEnumerable, (elInfo) => {
+  srcBehavior.iterate(srcObject, options.includeNonEnumerable, (elInfo) => {
     const elValue = elInfo.value, elType = elInfo.type;
     let elMayDeepCopy = objectBehaviors[elType].mayDeepCopy;
 
-    let elNew;
-    if (elMayDeepCopy) {
-      elNew = objectBehaviors[elType].makeEmpty(elValue);
-    } else {
-      elNew = objectBehaviors[elType].makeShallow(elValue);
-    }
+    let elNew = (elMayDeepCopy)
+      ? objectBehaviors[elType].makeEmpty(elValue)
+      : objectBehaviors[elType].makeShallow(elValue);
 
-    addElement(destObject, elInfo.key, elNew, elInfo.descriptor);
+    addElementToSource(destObject, elInfo.key, elNew, elInfo.descriptor);
 
     if (!elMayDeepCopy) { return; }
 
-    copyObject(elValue, elNew, elType, depth, options);
+    copyObject(elValue, { destObject: elNew, srcType: elType,
+      depth: depth, options: options });
   });
-}
+};
 
 /**
  * return a deep copy of the source
  * @param {Date|[]|{}} source
+ * @param {Object} options
  * @param {Boolean=true} options.goDeep - perform deep copy
  * @param {Boolean=false} options.includeNonEnumerable - copy non-enumerables
  * @param {number=20} options.maxDepth - maximum levels of depth
  * @return {*}
  */
-module.exports = function deepCopy (source, options) {
+function deepCopy (source, options = defaultOpts) {
 
-  options = options || defaultOptions;
-  if (typeof options.goDeep === 'undefined') {
-    options.goDeep = defaultOptions.goDeep;
-  }
-  if (typeof options.includeNonEnumerable === 'undefined') {
-    options.includeNonEnumerable = defaultOptions.includeNonEnumerable;
-  }
-  if (typeof options.maxDepth === 'undefined') {
-    options.maxDepth = defaultOptions.maxDepth;
-  }
+  Object.keys(defaultOpts).forEach(optName => {
+    if (typeof options[optName] === 'undefined') {
+      options[optName] = defaultOpts[optName];
+    }
+  });
 
+  // don't copy primitives
+  if (isPrimitive(source)) { return source;}
 
+  // shallow copy option
   if (!options.goDeep) {
     return objectBehaviors[objectType(source)].makeShallow(source);
   }
 
-  if (!source || isPrimitive(source)) {
-    return source;
-  }
-
   const sourceType = objectType(source);
   const mayDeepCopy = objectBehaviors[sourceType].mayDeepCopy;
+
+  // not deep copyable, do a shallow copy
   if (!mayDeepCopy) {
     return objectBehaviors[sourceType].makeShallow(source);
   }
 
+  // do recursive deep copy
   let dest = objectBehaviors[sourceType].makeEmpty(source);
-  copyObject(source, dest, sourceType, 0, options);
+  copyObject(source, {destObject: dest, srcType: sourceType,
+      depth: 0, options: options });
   return dest;
-};
+}
 
+module.exports = deepCopy;
 
 },{"./object-library.js":2}],2:[function(require,module,exports){
 // object library - specific behaviors for each object type
 
-// return true if the item is a primitive data type
+const objectBehaviors = {};
+
+// return true if item is a primitive data type
 const isPrimitive = (item) => {
   let type = typeof item;
   return type === 'number' || type === 'string' || type === 'boolean'
     || type === 'undefined' || type === 'bigint' || type === 'symbol'
     || item === null;
-}
+};
 
 // establish a "type" keyword for an object
 const objectType = (obj) => {
@@ -138,7 +133,7 @@ const objectType = (obj) => {
     }
   }
   return 'unknown';
-}
+};
 
 /**
  * define object behaviors
@@ -153,170 +148,128 @@ const objectType = (obj) => {
  * @property {function} [iterate] - iterate over objects elements
  *                                  with callback({key,value,"type"})
  */
-const objectBehaviors = {
-  "array": {
-    type: Array,
-    mayDeepCopy: true,
-    addElement: (array, key, value) => Array.prototype.push.call(array, value),
-    makeEmpty: source => {
-      const newArray = [];
-      Object.setPrototypeOf(newArray, Object.getPrototypeOf(source));
-      return newArray;
-    },
-    makeShallow: source => {
-      const dest = [...source];
-      Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
-      return dest;
-    },
-    iterate: (array, copyNonEnumerables, callback) => {
-      const len = array.length;
-      for (let i = 0; i < len; i++) {
-        const val = array[i];
-        const elInfo = {
-          key: i,
-          value: val,
-          type: objectType(val)
-        };
-        callback(elInfo);
+
+const arrayAddElement = (array, key, value) =>
+  Array.prototype.push.call(array, value);
+
+const arrayMakeEmpty = source => {
+  const newArray = [];
+  Object.setPrototypeOf(newArray, Object.getPrototypeOf(source));
+  return newArray;
+};
+
+const arrayMakeShallow = source => {
+  const dest = [...source];
+  Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
+  return dest;
+};
+
+const arrayIterate = (array, copyNonEnumerables, callback) => {
+  const len = array.length;
+  for (let i = 0; i < len; i++) {
+    const val = array[i];
+    const elInfo = {
+      key: i,
+      value: val,
+      type: objectType(val)
+    };
+    callback(elInfo);
+  }
+};
+
+const addArrayBehavior = () => {
+  Object.assign(objectBehaviors, {
+    'array': {
+      type: Array,
+      mayDeepCopy: true,
+      addElement: arrayAddElement,
+      makeEmpty: arrayMakeEmpty,
+      makeShallow: arrayMakeShallow,
+      iterate: arrayIterate
+    }
+  });
+};
+
+const addDateBehavior = () => {
+  Object.assign(objectBehaviors, {
+    'date': {
+      type: Date,
+      makeShallow: date => new Date(date.getTime()),
+    }
+  });
+};
+
+const addRegExpBehavior = () => {
+  Object.assign(objectBehaviors, {
+    'regexp': {
+      type: RegExp,
+      makeShallow: src => new RegExp(src),
+    }
+  });
+};
+
+const addFunctionBehavior = () => {
+  Object.assign(objectBehaviors, {
+    'function': {
+      type: Function,
+      makeShallow: fn => fn,
+    }
+  });
+};
+
+const addErrorBehavior = () => {
+  Object.assign(objectBehaviors, {
+    'error': {
+      type: Error,
+      makeShallow: err => {
+        const errCopy = new Error(err.message);
+        errCopy.stack = err.stack;
+        return errCopy;
       }
     }
-  },
-  "date": {
-    type: Date,
-    makeShallow: date => new Date(date.getTime()),
-  },
-  "regexp": {
-    type: RegExp,
-    makeShallow: src => new RegExp(src),
-  },
-  'function': {
-    type: Function,
-    makeShallow: fn => fn,
-  },
-  'error': {
-    type: Error,
-    makeShallow: err => {
-      const errCopy = new Error(err.message);
-      errCopy.stack = err.stack;
-      return errCopy;
-    }
-  }
+  });
 };
 
 // in case they don't exist, perform existence checks on these
 // types before adding them
 
-if (typeof Int8Array !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "int8array": {
-      type: Int8Array,
-      makeShallow: source => Int8Array.from(source),
-    }
-  });
-}
+// add a named TypedArray to objectBehaviors
+const addTypedArrayBehavior = (name) => {
+  let isDefined = eval('typeof ' + name + ' !== "undefined"');
+  if (isDefined) {
+    const nameLC = name.toLowerCase();
+    const makeShallow = eval('source => ' + name + '.from(source)');
+    objectBehaviors[nameLC] = {
+      type: eval(name),
+      makeShallow
+    };
+  }
+};
 
-if (typeof Uint8Array !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "uint8array": {
-      type: Uint8Array,
-      makeShallow: source => Uint8Array.from(source),
-    }
-  });
-}
+const addAllTypedArrayBehaviors = () => {
+  const typedArrayNames = [
+    'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array',
+    'Int32Array', 'Uint32Array', 'Float32Array', 'Float32Array',
+    'Float64Array', 'BigInt64Array', 'BigUint64Array'
+  ];
+  typedArrayNames.forEach(name => addTypedArrayBehavior(name));
+};
 
-if (typeof Uint8ClampedArray !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "uint8clampedarray": {
-      type: Uint8ClampedArray,
-      makeShallow: source => Uint8ClampedArray.from(source),
-    }
-  });
-}
+const addArrayBufferBehavior = () => {
+  if (typeof ArrayBuffer !== 'undefined') {
+    Object.assign(objectBehaviors, {
+      'arraybuffer': {
+        type: ArrayBuffer,
+        makeShallow: buffer => buffer.slice(0)
+      }
+    });
+  }
+};
 
-if (typeof Int16Array !== 'undefined') {
+const addMapBehavior = () => {
+  if (typeof Map === 'undefined') { return; }
   Object.assign(objectBehaviors, {
-    "int16array": {
-      type: Int16Array,
-      makeShallow: source => Int16Array.from(source),
-    }
-  });
-}
-
-if (typeof Uint16Array !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "uint16array": {
-      type: Uint16Array,
-      makeShallow: source => Uint16Array.from(source),
-    }
-  });
-}
-
-if (typeof Int32Array !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "int32array": {
-      type: Int32Array,
-      makeShallow: source => Int32Array.from(source),
-    }
-  });
-}
-
-if (typeof Uint32Array !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "uint32array": {
-      type: Uint32Array,
-      makeShallow: source => Uint32Array.from(source),
-    }
-  });
-}
-
-if (typeof Float32Array !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "float32array": {
-      type: Float32Array,
-      makeShallow: source => Float32Array.from(source),
-    }
-  });
-}
-
-if (typeof Float64Array !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "float64array": {
-      type: Float64Array,
-      makeShallow: source => Float64Array.from(source),
-    }
-  });
-}
-
-if (typeof BigInt64Array !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "bigint64array": {
-      type: BigInt64Array,
-      makeShallow: source => BigInt64Array.from(source),
-    }
-  });
-}
-
-if (typeof BigUint64Array !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "biguint64array": {
-      type: BigUint64Array,
-      makeShallow: source => BigUint64Array.from(source),
-    }
-  });
-}
-
-if (typeof ArrayBuffer !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "arraybuffer": {
-      type: ArrayBuffer,
-      makeShallow: buffer => buffer.slice(0)
-    }
-  });
-}
-
-if (typeof Map !== 'undefined') {
-  Object.assign(objectBehaviors, {
-    "map": {
+    'map': {
       type: Map,
       mayDeepCopy: true,
       addElement: (map, key, value) => map.set(key, value),
@@ -328,17 +281,18 @@ if (typeof Map !== 'undefined') {
             key: key,
             value: val,
             type: objectType(val)
-          }
+          };
           callback(elInfo);
         });
       }
     }
   });
-}
+};
 
-if (typeof Set !== 'undefined') {
+const addSetBehavior = () => {
+  if (typeof Set == 'undefined') { return; }
   Object.assign(objectBehaviors, {
-    "set": {
+    'set': {
       type: Set,
       mayDeepCopy: true,
       addElement: (set, key, value) => set.add(value),
@@ -350,95 +304,125 @@ if (typeof Set !== 'undefined') {
             key: null,
             value: val,
             type: objectType(val)
-          }
+          };
           callback(elInfo);
         });
       }
     }
   });
-}
+};
 
-if (typeof WeakSet !== 'undefined') {
+const addWeakSetBehavior = () => {
+  if (typeof WeakSet === 'undefined') { return; }
   Object.assign(objectBehaviors, {
-    "weakset" : {
+    'weakset': {
       type: WeakSet,
       makeShallow: wset => wset
     }
   });
-}
+};
 
-if (typeof WeakMap !== 'undefined') {
+const addWeakMapBehavior = () => {
+  if (typeof WeakMap === 'undefined') { return; }
   Object.assign(objectBehaviors, {
-    "weakmap" : {
+    'weakmap': {
       type: WeakMap,
       makeShallow: wmap => wmap
     }
   });
-}
+};
 
 // node.js Buffer
-if (typeof Buffer !== 'undefined') {
+const addBufferBehavior = () => {
+  if (typeof Buffer === 'undefined') { return; }
   Object.assign(objectBehaviors, {
-    "buffer" : {
+    'buffer': {
       type: Buffer,
       makeShallow: buf => Buffer.from(buf)
     }
   });
-}
+};
 
 // always include Object, primitive, unknown
-Object.assign(objectBehaviors, {
-  "object": {
-    type: Object,
-    mayDeepCopy: true,
-    addElement: (obj, key, value, descriptor = undefined) => {
-      if (!descriptor) {
-        obj[key] = value;
-      } else {
-        Object.defineProperty(obj, key, descriptor);
-      }
-    },
-    makeEmpty: source => {
-      const newObj = {};
-      Object.setPrototypeOf(newObj, Object.getPrototypeOf(source));
-      return newObj;
-    },
-    makeShallow: source => {
-      const dest = Object.assign({}, source);
-      Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
-      return dest;
-    },
-    iterate: (obj, copyNonEnumerables, callback) => {
-      const keys = copyNonEnumerables ?
-        Object.getOwnPropertyNames(obj) : Object.keys(obj);
-      const len = keys.length;
-      for (let i = 0; i < len; i++) {
-        const key = keys[i];
-        const value = obj[key];
-        const elInfo = {
-          key: key,
-          value: value,
-          type: objectType(value),
-        }
-        if (copyNonEnumerables && !obj.propertyIsEnumerable(key)) {
-          elInfo.descriptor = Object.getOwnPropertyDescriptor(obj, key);
-        }
-        callback(elInfo);
-      }
-    }
-  },
-  "unknown": {
-    makeShallow: source => source
-  },
-  "primitive": {
-    makeShallow: source => source
+const objectAddElement = (obj, key, value, descriptor = undefined) => {
+  if (!descriptor) {
+    obj[key] = value;
+  } else {
+    Object.defineProperty(obj, key, descriptor);
   }
-});
+};
+
+const objectMakeEmpty = source => {
+  const newObj = {};
+  Object.setPrototypeOf(newObj, Object.getPrototypeOf(source));
+  return newObj;
+};
+
+const objectMakeShallow = source => {
+  const dest = Object.assign({}, source);
+  Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
+  return dest;
+};
+
+const objectIterate = (obj, copyNonEnumerables, callback) => {
+  const keys = copyNonEnumerables ?
+    Object.getOwnPropertyNames(obj) : Object.keys(obj);
+  const len = keys.length;
+  for (let i = 0; i < len; i++) {
+    const key = keys[i], value = obj[key], elInfo = {
+      key, value, type: objectType(value)
+    };
+    if (copyNonEnumerables && !obj.propertyIsEnumerable(key)) {
+      elInfo.descriptor = Object.getOwnPropertyDescriptor(obj, key);
+    }
+    callback(elInfo);
+  }
+};
+
+const addObjectBehavior = () => {
+  Object.assign(objectBehaviors, {
+    'object': {
+      type: Object,
+      mayDeepCopy: true,
+      addElement: objectAddElement,
+      makeEmpty: objectMakeEmpty,
+      makeShallow: objectMakeShallow,
+      iterate: objectIterate
+    }
+  });
+};
+
+const addUnknownAndPrimitive = () => {
+  Object.assign(objectBehaviors, {
+    'unknown': {
+      makeShallow: source => source
+    },
+    'primitive': {
+      makeShallow: source => source
+    }
+  });
+};
+
+addArrayBehavior();
+addDateBehavior();
+addRegExpBehavior();
+addFunctionBehavior();
+addErrorBehavior();
+addAllTypedArrayBehaviors();
+addArrayBufferBehavior();
+addMapBehavior();
+addSetBehavior();
+addWeakSetBehavior();
+addWeakMapBehavior();
+addBufferBehavior();
+addObjectBehavior();
+addUnknownAndPrimitive();
 
 module.exports = [
   isPrimitive,
   objectType,
   objectBehaviors
-]
+];
+
 },{}]},{},[1])(1)
 });

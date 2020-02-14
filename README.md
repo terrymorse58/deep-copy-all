@@ -2,6 +2,13 @@
 
 A fast, compact, and robust method to deep copy all JavaScript data types
 ---
+![GitHub top language](https://img.shields.io/github/languages/top/terrymorse58/deep-copy-all)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/terrymorse58/deep-copy-all)
+[![codebeat badge](https://codebeat.co/badges/8791cc9e-5a88-4a2e-9375-fc4d207e9370)](https://codebeat.co/projects/github-com-terrymorse58-deep-copy-all-master)
+![David](https://img.shields.io/david/terrymorse58/deep-copy-all)
+![NPM Downloads](https://img.shields.io/npm/dw/deep-copy-all)
+![NPM License](https://img.shields.io/npm/l/deep-copy-all)
+[![Twitter](https://img.shields.io/twitter/follow/terrymorse.svg?style=social&label=@terrymorse)](https://twitter.com/terrymorse)
 
 **deep-copy-all** JavaScript object deep cloner is:
  

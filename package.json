@@ -1,6 +1,6 @@
 {
   "name": "deep-copy-all",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "deep copy JavaScript data of any type",
   "main": "index.min.js",
   "repository": {
