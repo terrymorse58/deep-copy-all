@@ -14,7 +14,7 @@ const isPrimitive = (item) => {
 const objectType = (obj) => {
 
   // match primitives right away
-  if (isPrimitive(obj) || !obj instanceof Object) {
+  if (isPrimitive(obj) || !(obj instanceof Object)) {
     return 'primitive';
   }
 
@@ -138,13 +138,13 @@ const addErrorBehavior = () => {
 
 // add a named TypedArray to objectBehaviors
 const addTypedArrayBehavior = (name) => {
-  let isDefined = eval('typeof ' + name + ' !== "undefined"');
-  if (isDefined) {
-    const nameLC = name.toLowerCase();
-    const makeShallow = eval('source => ' + name + '.from(source)');
-    objectBehaviors[nameLC] = {
-      type: eval(name),
-      makeShallow
+  let type = (typeof global !== 'undefined' && global[name])
+    || (typeof window !== 'undefined' && window[name])
+    || (typeof WorkerGlobalScope !== 'undefined' && WorkerGlobalScope[name]);
+  if (typeof type !== 'undefined') {
+    objectBehaviors[name.toLowerCase()] = {
+      type,
+      makeShallow: source => type.from(source)
     };
   }
 };
@@ -193,7 +193,7 @@ const addMapBehavior = () => {
 };
 
 const addSetBehavior = () => {
-  if (typeof Set == 'undefined') { return; }
+  if (typeof Set === 'undefined') { return; }
   Object.assign(objectBehaviors, {
     'set': {
       type: Set,

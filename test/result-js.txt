@@ -70,9 +70,9 @@ Test7 (Date):
   let src = [1, 2, new Date(), 3];
   let dest = deepCopy(src, [object Object]);
   dest[2].setMonth(7);
-    src:  [ 1, 2, 2020-02-14T00:41:55.991Z, 3 ]
-    dest: [ 1, 2, 2020-02-14T00:41:55.991Z, 3 ]
-    dest: [ 1, 2, 2020-08-13T23:41:55.991Z, 3 ]
+    src:  [ 1, 2, 2020-02-14T01:34:41.409Z, 3 ]
+    dest: [ 1, 2, 2020-02-14T01:34:41.409Z, 3 ]
+    dest: [ 1, 2, 2020-08-14T00:34:41.409Z, 3 ]
 Test7 (Date): status is "OK"
 
 Test8 (Error):
@@ -331,4 +331,4 @@ errors: []
 All tests complete.
 
 
-Elapsed time: 15 milliseconds
+Elapsed time: 33 milliseconds
