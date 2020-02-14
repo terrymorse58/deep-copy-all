@@ -90,5 +90,5 @@ function deepCopy (source, options = defaultOpts) {
       depth: 0, options: options });
   return dest;
 }
-q
+
 module.exports = deepCopy;

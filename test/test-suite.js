@@ -321,7 +321,7 @@ function testSuite (copierName, deepCopy, options) {
 
 
 // array > Int16Array
-  newTest('Int8Array', () => {
+  newTest('Int16Array', () => {
     console.log(
       '  let src = [ 1, 2, Int16Array.from([3, 4, 42]) ];\n' +
       `  let dest = deepCopy(src, ${options});\n` +
