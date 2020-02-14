@@ -52,35 +52,43 @@ const objectType = (obj) => {
  *                                  with callback({key,value,"type"})
  */
 
+const arrayAddElement = (array, key, value) =>
+  Array.prototype.push.call(array, value);
+
+const arrayMakeEmpty = source => {
+  const newArray = [];
+  Object.setPrototypeOf(newArray, Object.getPrototypeOf(source));
+  return newArray;
+};
+
+const arrayMakeShallow = source => {
+  const dest = [...source];
+  Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
+  return dest;
+};
+
+const arrayIterate = (array, copyNonEnumerables, callback) => {
+  const len = array.length;
+  for (let i = 0; i < len; i++) {
+    const val = array[i];
+    const elInfo = {
+      key: i,
+      value: val,
+      type: objectType(val)
+    };
+    callback(elInfo);
+  }
+};
+
 const addArrayBehavior = () => {
   Object.assign(objectBehaviors, {
     'array': {
       type: Array,
       mayDeepCopy: true,
-      addElement: (array, key, value) =>
-        Array.prototype.push.call(array, value),
-      makeEmpty: source => {
-        const newArray = [];
-        Object.setPrototypeOf(newArray, Object.getPrototypeOf(source));
-        return newArray;
-      },
-      makeShallow: source => {
-        const dest = [...source];
-        Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
-        return dest;
-      },
-      iterate: (array, copyNonEnumerables, callback) => {
-        const len = array.length;
-        for (let i = 0; i < len; i++) {
-          const val = array[i];
-          const elInfo = {
-            key: i,
-            value: val,
-            type: objectType(val)
-          };
-          callback(elInfo);
-        }
-      }
+      addElement: arrayAddElement,
+      makeEmpty: arrayMakeEmpty,
+      makeShallow: arrayMakeShallow,
+      iterate: arrayIterate
     }
   });
 };
@@ -239,47 +247,56 @@ const addBufferBehavior = () => {
 };
 
 // always include Object, primitive, unknown
+const objectAddElement = (obj, key, value, descriptor = undefined) => {
+  if (!descriptor) {
+    obj[key] = value;
+  } else {
+    Object.defineProperty(obj, key, descriptor);
+  }
+};
+
+const objectMakeEmpty = source => {
+  const newObj = {};
+  Object.setPrototypeOf(newObj, Object.getPrototypeOf(source));
+  return newObj;
+};
+
+const objectMakeShallow = source => {
+  const dest = Object.assign({}, source);
+  Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
+  return dest;
+};
+
+const objectIterate = (obj, copyNonEnumerables, callback) => {
+  const keys = copyNonEnumerables ?
+    Object.getOwnPropertyNames(obj) : Object.keys(obj);
+  const len = keys.length;
+  for (let i = 0; i < len; i++) {
+    const key = keys[i], value = obj[key], elInfo = {
+      key, value, type: objectType(value)
+    };
+    if (copyNonEnumerables && !obj.propertyIsEnumerable(key)) {
+      elInfo.descriptor = Object.getOwnPropertyDescriptor(obj, key);
+    }
+    callback(elInfo);
+  }
+};
+
 const addObjectBehavior = () => {
   Object.assign(objectBehaviors, {
     'object': {
       type: Object,
       mayDeepCopy: true,
-      addElement: (obj, key, value, descriptor = undefined) => {
-        if (!descriptor) {
-          obj[key] = value;
-        } else {
-          Object.defineProperty(obj, key, descriptor);
-        }
-      },
-      makeEmpty: source => {
-        const newObj = {};
-        Object.setPrototypeOf(newObj, Object.getPrototypeOf(source));
-        return newObj;
-      },
-      makeShallow: source => {
-        const dest = Object.assign({}, source);
-        Object.setPrototypeOf(dest, Object.getPrototypeOf(source));
-        return dest;
-      },
-      iterate: (obj, copyNonEnumerables, callback) => {
-        const keys = copyNonEnumerables ?
-          Object.getOwnPropertyNames(obj) : Object.keys(obj);
-        const len = keys.length;
-        for (let i = 0; i < len; i++) {
-          const key = keys[i];
-          const value = obj[key];
-          const elInfo = {
-            key: key,
-            value: value,
-            type: objectType(value),
-          };
-          if (copyNonEnumerables && !obj.propertyIsEnumerable(key)) {
-            elInfo.descriptor = Object.getOwnPropertyDescriptor(obj, key);
-          }
-          callback(elInfo);
-        }
-      }
-    },
+      addElement: objectAddElement,
+      makeEmpty: objectMakeEmpty,
+      makeShallow: objectMakeShallow,
+      iterate: objectIterate
+    }
+  });
+};
+
+const addUnknownAndPrimitive = () => {
+  Object.assign(objectBehaviors, {
     'unknown': {
       makeShallow: source => source
     },
@@ -302,6 +319,7 @@ addWeakSetBehavior();
 addWeakMapBehavior();
 addBufferBehavior();
 addObjectBehavior();
+addUnknownAndPrimitive();
 
 module.exports = [
   isPrimitive,
