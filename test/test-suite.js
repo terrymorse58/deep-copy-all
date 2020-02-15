@@ -738,6 +738,31 @@ function testSuite (copierName, deepCopy, options) {
       postOK();
     }  catch (err) { logErr(err, iTest, name); }  });
 
+  // circular object
+  newTest('circular Object', () => {
+    console.log(
+      '  const src = { foo: "Foo", bar: {bar: "Bar"}};\n' +
+      '  src.bar.baz = src;\n' +
+      '  dest.foo = "FOO_FOO";'
+    );
+    try {
+      const src = { foo: "Foo", bar: {bar: "Bar"}};
+      src.bar.baz = src;
+      console.log('    src: ', src);
+      let dest = deepCopy(src, options);
+      console.log('    dest:', dest);
+      if (!(dest instanceof Object)
+        || dest.foo !== src.foo) {
+        return postLoss();
+      }
+      dest.foo = "FOO_FOO";
+      console.log('    dest:', dest);
+      if (dest.foo === src.foo) {
+        return postShallow();
+      }
+      postOK();
+    }  catch (err) { logErr(err, iTest, name); }  });
+
 
   //
   // benchmark test
@@ -747,7 +772,7 @@ function testSuite (copierName, deepCopy, options) {
 
     console.log('\nBenchmark speed test:');
     const BENCHMARK_RUNS = 1000;
-    const json = fs.readFileSync('./test/benchmark-fixture.json');
+    const json = fs.readFileSync('./test/benchmark-fixture.json').toString();
     if (json && json.length) {
       const testSuite = JSON.parse(json);
       const starttime = new Date().getTime();
@@ -770,6 +795,7 @@ function testSuite (copierName, deepCopy, options) {
 
   // console.log('status:', status);
   console.table(status);
+
   console.log('\nerrors:',errors);
 
 

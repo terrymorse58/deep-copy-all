@@ -1,6 +1,6 @@
 {
   "name": "deep-copy-all",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "description": "deep copy JavaScript data of any type",
   "main": "index.min.js",
   "repository": {
@@ -8,14 +8,13 @@
     "url": "https://github.com/terrymorse58/deep-copy-all.git"
   },
   "scripts": {
-    "test": "node ./test/test-js.js > ./test/result-js.txt",
+    "test": "node ./test/test-deep-copy-all.js > ./test/result-deep-copy-all.txt",
     "test-cloneextend": "node ./test/test-cloneextend.js > ./test/result-cloneextend.txt",
     "test-clone": "node ./test/test-clone.js > ./test/result-clone.txt",
     "test-deepcopy": "node ./test/test-deepcopy.js > ./test/result-deepcopy.txt",
     "test-deep-copy": "node ./test/test-deep-copy.js > ./test/result-deep-copy.txt",
     "test-fast-copy": "node ./test/test-fast-copy.js > ./test/result-fast-copy.txt",
     "test-json": "node ./test/test-JSON.js > ./test/result-JSON.txt",
-    "profile": "node --prof ./test/test-js.js > ./test/result-profile.txt",
     "build": "bash build.sh"
   },
   "keywords": [

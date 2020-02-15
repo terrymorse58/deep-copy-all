@@ -5,7 +5,8 @@ const testSuite = require('./test-suite.js');
 // Settings
 const options = {
   goDeep: true,
-  includeNonEnumerable: true
+  includeNonEnumerable: true,
+  detectCircular: true
 }
 
 console.error(`Begin test on "${copierName}" ...`);

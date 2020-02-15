@@ -321,8 +321,26 @@ addBufferBehavior();
 addObjectBehavior();
 addUnknownAndPrimitive();
 
+/**
+ * object actions as defined in objectBehaviors { }
+ * @typedef {Object} ObjectActions
+ * @property {Boolean} mayDeepCopy
+ * @property {Function} addElement
+ * @property {Function} makeEmpty
+ * @property {Function} makeShallow
+ * @property {Function} iterate
+ */
+/**
+ * return object actions for the named typed
+ * @param {string} typeName
+ * @return {ObjectActions}
+ */
+function objectActions(typeName) {
+  return objectBehaviors[typeName];
+}
+
 module.exports = [
   isPrimitive,
   objectType,
-  objectBehaviors
+  objectActions
 ];

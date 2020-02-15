@@ -11,7 +11,7 @@ A fast, compact, and robust method to deep copy all JavaScript data types
 [![Twitter](https://img.shields.io/twitter/follow/terrymorse.svg?style=social&label=@terrymorse)](https://twitter.com/terrymorse)
 
 **deep-copy-all** JavaScript object deep cloner is:
- 
+
 - fast – ranking highly on common benchmark speed tests
 
 - compact – about 5k (minified)
@@ -43,7 +43,7 @@ HTML file:
 ## Comparison
 The accuracy of **deep-copy-all** compares well against other deep copying
  packages.
- 
+
  Legend: &nbsp; &nbsp; ☑️ - deep copy
  &nbsp; &nbsp; 🚧 - shallow copy
  &nbsp; &nbsp; 🗑️ - data loss
@@ -77,6 +77,7 @@ The accuracy of **deep-copy-all** compares well against other deep copying
  enumerable:false  | 🗑️ | 🗑️    |🗑️|🗑️|🗑️|🗑️|☑️
  custom Array      | 🗑️ | 🗑️    |🗑️|🗑️|🗑️|☑️|☑️
  custom Object     | 🗑️ | 🗑️    |🗑️|🗑️|☑️|☑️|☑️
+ circular Object   | ⚠️ | ☑️  |⚠️|☑️|☑️|🗑️|☑️
 
 JSON.* - JSON.parse(JSON.stringify())<br>
 ce - [cloneextend](https://www.npmjs.com/package/cloneextend)<br>
@@ -85,7 +86,7 @@ dc - [deepcopy](https://www.npmjs.com/package/deepcopy)<br>
 cl - [clone](https://www.npmjs.com/package/clone)<br>
 f-c - [fast-copy](https://www.npmjs.com/package/fast-copy)
 
---- 
+---
 
 ## `deepCopy()` ##
 Perform deep copy of a JavaScript object or array.
@@ -103,19 +104,19 @@ deepCopy(source [, options])
 `options` properties:
 
 &nbsp;&nbsp;&nbsp; `goDeep`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {Boolean} *[optional]* - Perform deep copy
-if **true** (default).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {Boolean} *[optional]* - Perform deep copy if *true* (default).<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set to **false** to perform shallow copy.
 
 &nbsp;&nbsp;&nbsp; `includeNonEnumerable`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {Boolean} *[optional]* -
-Copies non-enumerable properties if **true**.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Skips non-enumerable properties if
-**false** (default).
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {Boolean} *[optional]* - Copies non-enumerable properties if *true*.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Skips non-enumerable properties if *false* (default).
+
+&nbsp;&nbsp;&nbsp; `detectCircular`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {Boolean} *[optional]* - Detect circular references if **true** (default).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; May be set to *false* if source has no circular references.
 
 &nbsp;&nbsp;&nbsp; `maxDepth`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {number} *[optional]* - the maximum
-depth to copy, default is 20
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {number} *[optional]* - The maximum depth to copy, default is 20 levels.
 
 #### Return value ####
 The copied data.
