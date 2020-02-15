@@ -4,7 +4,7 @@ const [ isPrimitive, objectType, objectActions ] =
   require('./object-library.js');
 
 /**
- * copy options for deepCopy
+ * copy options for deep-copy-all
  * @typedef {Object} CopyOptions
  * @property {boolean} goDeep
  * @property {boolean} includeNonEnumerable
@@ -13,12 +13,12 @@ const [ isPrimitive, objectType, objectActions ] =
  */
 
 /**
- * args for copyObjectContents
+ * args for copyObjectContents()
  * @typedef {Object} CopyArgs
  * @property {Object} destObject
  * @property {string} srcType
  * @property {Watcher} watcher
- * @property {Object} options
+ * @property {CopyOptions|Object} options
  */
 
 
@@ -63,7 +63,7 @@ class Watcher {
  * @param {Object} element
  * @param {ObjectActions} elActions
  * @param {Object} args
- * @param {CopyOptions} args.options
+ * @param {CopyOptions|Object} args.options
  * @param {Watcher} args.watcher
  * @return {*}
  */
@@ -107,11 +107,9 @@ const copyObjectContents = (srcObject, args, depth) => {
 
   // iterate over source object's elements
   objActions.iterate(srcObject, options.includeNonEnumerable, (elInfo) => {
-    const elValue = elInfo.value, elType = elInfo.type;
-    const elActions = objectActions(elType);
-    let elMayDeepCopy = elActions.mayDeepCopy;
-    let elSeenBefore = false;
-    let elCopy;
+    const elValue = elInfo.value, elType = elInfo.type,
+      elActions = objectActions(elType);
+    let elSeenBefore = false, elCopy;
 
     // create copy of source element
     if (detectCircular && watcher.wasCopied(elValue)) {
@@ -124,10 +122,10 @@ const copyObjectContents = (srcObject, args, depth) => {
 
     addElementToObject(destObject, elInfo.key, elCopy, elInfo.descriptor);
 
-    if (!elMayDeepCopy || elSeenBefore) { return; }
+    if (!elActions.mayDeepCopy || elSeenBefore) { return; }
 
-    copyObjectContents(elValue, { destObject: elCopy, srcType: elType,
-      watcher, options }, depth);
+    copyObjectContents(elValue,
+      { destObject: elCopy, srcType: elType, watcher, options }, depth);
   });
 };
 
