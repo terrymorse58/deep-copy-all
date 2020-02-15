@@ -4,12 +4,23 @@ const [ isPrimitive, objectType, objectActions ] =
   require('./object-library.js');
 
 /**
+ * copy options for deepCopy
  * @typedef {Object} CopyOptions
  * @property {boolean} goDeep
  * @property {boolean} includeNonEnumerable
  * @property {boolean} detectCircular
  * @property {number} maxDepth
  */
+
+/**
+ * args for copyObjectContents
+ * @typedef {Object} CopyArgs
+ * @property {Object} destObject
+ * @property {string} srcType
+ * @property {Watcher} watcher
+ * @property {Object} options
+ */
+
 
 /** @type {CopyOptions} **/
 const defaultOpts = {
@@ -18,6 +29,13 @@ const defaultOpts = {
   detectCircular: true,
   maxDepth: 20
 };
+function setMissingOptions(options) {
+  Object.keys(defaultOpts).forEach(optName => {
+    if (typeof options[optName] === 'undefined') {
+      options[optName] = defaultOpts[optName];
+    }
+  });
+}
 
 // watch for circular references
 class Watcher {
@@ -41,13 +59,34 @@ class Watcher {
 }
 
 /**
- * args to copyObjectContents
- * @typedef {Object} CopyArgs
- * @property {Object} destObject
- * @property {string} srcType
- * @property {Watcher} watcher
- * @property {Object} options
+ * make copy of element
+ * @param {Object} element
+ * @param {ObjectActions} elActions
+ * @param {Object} args
+ * @param {CopyOptions} args.options
+ * @param {Watcher} args.watcher
+ * @return {*}
  */
+function copyElement(element, elActions,
+  args) {
+  const {options, watcher} = args;
+  let copy;
+  if (elActions.mayDeepCopy) {
+    copy = elActions.makeEmpty(element);
+    if (options.detectCircular) {watcher.setAsCopied(element, copy);}
+  } else {
+    copy = elActions.makeShallow(element);
+  }
+  return copy;
+}
+
+function checkForExceededDepth(depth, maxDepth) {
+  if (depth >= maxDepth) {
+    // console.log('copyObjectContents max depth exceeded srcObject:',srcObject);
+    throw `Error max depth of ${maxDepth} levels exceeded, possible circular reference`;
+  }
+}
+
 
 /**
  * copy source object contents to destination object (recursive)
@@ -59,10 +98,7 @@ const copyObjectContents = (srcObject, args, depth) => {
   const {destObject, srcType, watcher, options} = args;
   const detectCircular = options.detectCircular;
 
-  if (++depth >= options.maxDepth) {
-    // console.log('copyObjectContents max depth exceeded srcObject:',srcObject);
-    throw `Error max depth of ${options.maxDepth} levels exceeded, possible circular reference`;
-  }
+  checkForExceededDepth(++depth, options.maxDepth);
 
   const objActions = objectActions(srcType);
   if (!objActions.mayDeepCopy) { return; }
@@ -82,22 +118,16 @@ const copyObjectContents = (srcObject, args, depth) => {
       // console.log('copyObjectContents was seen, using reference elValue:', elValue);
       elCopy = watcher.getCopy(elValue);
       elSeenBefore = true;
-    } else if (elMayDeepCopy) {
-      elCopy = elActions.makeEmpty(elValue);
-      if (detectCircular) {watcher.setAsCopied(elValue, elCopy);}
     } else {
-      elCopy = elActions.makeShallow(elValue);
+      elCopy = copyElement(elValue, elActions, {options, watcher});
     }
 
     addElementToObject(destObject, elInfo.key, elCopy, elInfo.descriptor);
 
     if (!elMayDeepCopy || elSeenBefore) { return; }
 
-    copyObjectContents(elValue, {
-      destObject: elCopy,
-      srcType: elType,
-      watcher,
-      options }, depth);
+    copyObjectContents(elValue, { destObject: elCopy, srcType: elType,
+      watcher, options }, depth);
   });
 };
 
@@ -108,43 +138,28 @@ const copyObjectContents = (srcObject, args, depth) => {
  * @return {*}
  */
 function deepCopy (source, options = defaultOpts) {
-
-  Object.keys(defaultOpts).forEach(optName => {
-    if (typeof options[optName] === 'undefined') {
-      options[optName] = defaultOpts[optName];
-    }
-  });
-
-  // console.log('deepCopy options:', options);
+  setMissingOptions(options);
 
   // don't deep copy primitives
   if (isPrimitive(source)) { return source;}
 
   const srcType = objectType(source);
   const srcActions = objectActions(srcType);
-  const mayDeepCopy = srcActions.mayDeepCopy;
 
-  if (!options.goDeep || !mayDeepCopy) {
+  if (!options.goDeep || !srcActions.mayDeepCopy) {
     return srcActions.makeShallow(source);
   }
 
   // create watcher for circular references
   const watcher = (options.detectCircular) ? new Watcher() : null;
 
-  // for recursive copy, make empty object to be filled by copyObjectContents
+  // recursive copy: make empty object to be filled by copyObjectContents
   let destObject = srcActions.makeEmpty(source);
 
-  if (options.detectCircular) {
-    watcher.setAsCopied(source, destObject);
-  }
+  if (options.detectCircular) { watcher.setAsCopied(source, destObject); }
 
   // copy contents of source object to destination object
-  copyObjectContents(source, {
-    destObject,
-    srcType,
-    watcher,
-    options
-  }, 0);
+  copyObjectContents(source, { destObject, srcType, watcher, options }, 0);
   return destObject;
 }
 

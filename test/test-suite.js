@@ -793,7 +793,7 @@ function testSuite (copierName, deepCopy, options) {
 
   }
 
-  // console.log('status:', status);
+  console.log('\n');
   console.table(status);
 
   console.log('\nerrors:',errors);
