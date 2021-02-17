@@ -1,5 +1,5 @@
 const copierName = 'deep-copy-all';
-const deepCopy = require('../deep-copy-all.min.js');
+const deepCopy = require('../dist/deepCopyAll.min.js');
 const testSuite = require('./test-suite.js');
 
 // Settings

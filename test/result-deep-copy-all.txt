@@ -1,0 +1,348 @@
+Options are set to: { goDeep: true, includeNonEnumerable: true, detectCircular: true }
+
+Test1 (Array):
+  let src = [1, 2, 3, [4, 5]];
+  let dest = deepCopy(src, options);
+  dest[3][1] = 50000;
+    src:  [1,2,3,[4,5]]
+    dest: [1,2,3,[4,5]]
+    dest: [1,2,3,[4,50000]]
+Test1 (Array): status is "OK"
+
+Test2 (ArrayBuffer):
+  let aBuf = new ArrayBuffer(8);
+  let src = new Uint8Array(aBuf);
+  src.set([1, 2, 3], 3);
+  let bufCopy = deepCopy(aBuf, [object Object]);
+  let dest = new Uint8Array(bufCopy);
+  dest[0] = 128;
+    aBuf:   ArrayBuffer {
+  [Uint8Contents]: <00 00 00 01 02 03 00 00>,
+  byteLength: 8
+}
+    bufCopy: ArrayBuffer {
+  [Uint8Contents]: <00 00 00 01 02 03 00 00>,
+  byteLength: 8
+}
+    dest:   ArrayBuffer {
+  [Uint8Contents]: <80 00 00 01 02 03 00 00>,
+  byteLength: 8
+}
+Test2 (ArrayBuffer): status is "OK"
+
+Test3 (BigInt):
+  let src = [1, 2, BigInt(3000000)];
+  let dest = deepCopy(src, [object Object]);
+  dest[2].setMonth(7);
+    src:  [ 1, 2, 3000000n ]
+    dest: [ 1, 2, 3000000n ]
+    dest: [ 1, 2, 9999999n ]
+Test3 (BigInt): status is "OK"
+
+Test4 (BigInt64Array):
+  let src = [ 1, 2, BigInt64Array.from([3n, 4n, 42n]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][0] = 300000n;
+    src:  [ 1, 2, BigInt64Array(3) [ 3n, 4n, 42n ] ]
+    dest: [ 1, 2, BigInt64Array(3) [ 3n, 4n, 42n ] ]
+    dest: [ 1, 2, BigInt64Array(3) [ 300000n, 4n, 42n ] ]
+Test4 (BigInt64Array): status is "OK"
+
+Test5 (BigUint64Array):
+  let src = [ 1, 2, BigUint64Array.from([3n, 4n, 42n]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][0] = 909090909n;
+    src:  [ 1, 2, BigUint64Array(3) [ 3n, 4n, 42n ] ]
+    dest: [ 1, 2, BigUint64Array(3) [ 3n, 4n, 42n ] ]
+    dest: [ 1, 2, BigUint64Array(3) [ 909090909n, 4n, 42n ] ]
+Test5 (BigUint64Array): status is "OK"
+
+Test6 (Buffer):
+  let src = Buffer.from([1, 2, 3]);
+  let dest = deepCopy(src);
+  dest[0] = 128;
+    src:  <Buffer 01 02 03>
+    dest: <Buffer 01 02 03>
+    dest: <Buffer 80 02 03>
+Test6 (Buffer): status is "OK"
+
+Test7 (Date):
+  let src = [1, 2, new Date(), 3];
+  let dest = deepCopy(src, [object Object]);
+  dest[2].setMonth(7);
+    src:  [ 1, 2, 2021-02-17T17:35:31.048Z, 3 ]
+    dest: [ 1, 2, 2021-02-17T17:35:31.048Z, 3 ]
+    dest: [ 1, 2, 2021-08-17T16:35:31.048Z, 3 ]
+Test7 (Date): status is "OK"
+
+Test8 (Error):
+  let src = new Error("this is an error message");
+  let dest = deepCopy(src);
+    src.message:  this is an error message
+    src.stack:  Error: this is an error message
+    at /Users/terrymorse/PhpstormProjects/Deep-Copy-All/deep-copy-all/test/test-suite.js:229:17
+    at newTest (/Users/terrymorse/PhpstormProjects/Deep-Copy-All/deep-copy-all/test/test-suite.js:36:7)
+    at testSuite (/Users/terrymorse/PhpstormProjects/Deep-Copy-All/deep-copy-all/test/test-suite.js:223:3)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Deep-Copy-All/deep-copy-all/test/test-deep-copy-all.js:18:16)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)
+    at internal/main/run_main_module.js:17:47
+    dest.message: this is an error message
+    dest.stack: Error: this is an error message
+    at /Users/terrymorse/PhpstormProjects/Deep-Copy-All/deep-copy-all/test/test-suite.js:229:17
+    at newTest (/Users/terrymorse/PhpstormProjects/Deep-Copy-All/deep-copy-all/test/test-suite.js:36:7)
+    at testSuite (/Users/terrymorse/PhpstormProjects/Deep-Copy-All/deep-copy-all/test/test-suite.js:223:3)
+    at Object.<anonymous> (/Users/terrymorse/PhpstormProjects/Deep-Copy-All/deep-copy-all/test/test-deep-copy-all.js:18:16)
+    at Module._compile (internal/modules/cjs/loader.js:1076:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1097:10)
+    at Module.load (internal/modules/cjs/loader.js:941:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:782:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:72:12)
+    at internal/main/run_main_module.js:17:47
+    dest.message: New Message
+Test8 (Error): status is "OK"
+
+Test9 (Float32Array):
+  let src = [ 1, 2, Float32Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[1] = 16181618;
+    src:  [ 1, 2, Float32Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Float32Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 16181618, Float32Array(3) [ 3, 4, 42 ] ]
+Test9 (Float32Array): status is "OK"
+
+Test10 (Float64Array):
+  let src = [ 1, 2, Float64Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][0] = 16181618;
+    src:  [ 1, 2, Float64Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Float64Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Float64Array(3) [ 16181618, 4, 42 ] ]
+Test10 (Float64Array): status is "OK"
+
+Test11 (Int8Array):
+  let src = [ 1, 2, Int8Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][0] = 128;
+    src:  [ 1, 2, Int8Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Int8Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Int8Array(3) [ -128, 4, 42 ] ]
+Test11 (Int8Array): status is "OK"
+
+Test12 (Int16Array):
+  let src = [ 1, 2, Int16Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][0] = 1024;
+    src:  [ 1, 2, Int16Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Int16Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Int16Array(3) [ 1024, 4, 42 ] ]
+Test12 (Int16Array): status is "OK"
+
+Test13 (Int32Array):
+  let src = [ 1, 2, Int32Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][0] = 16181618;
+    src:  [ 1, 2, Int32Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Int32Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Int32Array(3) [ 16181618, 4, 42 ] ]
+Test13 (Int32Array): status is "OK"
+
+Test14 (Map):
+  let myMap = new Map();
+  let keyString = "a string";
+  let keyObj = {};
+  let keyFunc = function () {};
+  myMap.set(keyString, 'value associated with "a string"');
+  myMap.set(keyObj, 'value associated with keyObj');
+  myMap.set(keyFunc, 'value associated with keyFunc');
+  let dest = deepCopy(myMap, [object Object]);
+  dest.delete(keyFunc);
+    myMap: Map(3) {
+  'a string' => 'value associated with "a string"',
+  {} => 'value associated with keyObj',
+  [Function: keyFunc] => 'value associated with keyFunc'
+}
+    dest:  Map(3) {
+  'a string' => 'value associated with "a string"',
+  {} => 'value associated with keyObj',
+  [Function: keyFunc] => 'value associated with keyFunc'
+}
+    dest:  Map(2) {
+  'a string' => 'value associated with "a string"',
+  {} => 'value associated with keyObj'
+}
+Test14 (Map): status is "OK"
+
+Test15 (Object):
+  const src = ["a", 42, { name: "terry", age: "old" }];
+  let dest = deepCopy(src, options);
+  dest[2].age = "none of your business";
+    src:  ["a",42,{"name":"terry","age":"old"}]
+    dest: ["a",42,{"name":"terry","age":"old"}]
+    dest: ["a",42,{"name":"terry","age":"none of your business"}]
+Test15 (Object): status is "OK"
+
+Test16 (RegExp):
+  let src = [1, 2, /abc/, "foo"];
+  let dest = deepCopy(src, [object Object]);
+  dest[2] = /123/;
+    src: [ 1, 2, /abc/, 'foo' ]
+    dest:  [ 1, 2, /abc/, 'foo' ]
+    dest:  [ 1, 2, /123/, 'foo' ]
+Test16 (RegExp): status is "OK"
+
+Test17 (Set):
+  let src = new Set([1,"a",2,{foo: "bar"}]);
+  let dest = deepCopy(src, [object Object]);
+  dest.add("new stuff");
+    src:  Set(4) { 1, 'a', 2, { foo: 'bar' } }
+    dest: Set(4) { 1, 'a', 2, { foo: 'bar' } }
+    dest: Set(5) { 1, 'a', 2, { foo: 'bar' }, 'new stuff' }
+Test17 (Set): status is "OK"
+
+Test18 (Uint8Array):
+  let src = [ 1, 2, Uint8Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][0] = 127;
+    src:  [ 1, 2, Uint8Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint8Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint8Array(3) [ 127, 4, 42 ] ]
+Test18 (Uint8Array): status is "OK"
+
+Test19 (Uint8ClampedArray):
+  let src = [ 1, 2, Uint8ClampedArray.from([3, 4, 42]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][0] = 64;
+    src:  [ 1, 2, Uint8ClampedArray(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint8ClampedArray(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint8ClampedArray(3) [ 64, 4, 42 ] ]
+Test19 (Uint8ClampedArray): status is "OK"
+
+Test20 (Uint16Array):
+  let src = [ 1, 2, Uint16Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][1] = 1024;
+    src:  [ 1, 2, Uint16Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint16Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint16Array(3) [ 3, 1024, 42 ] ]
+Test20 (Uint16Array): status is "OK"
+
+Test21 (Uint32Array):
+  let src = [ 1, 2, Uint32Array.from([3, 4, 42]) ];
+  let dest = deepCopy(src, [object Object]);
+  dest[2][1] = 8192;
+    src:  [ 1, 2, Uint32Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint32Array(3) [ 3, 4, 42 ] ]
+    dest: [ 1, 2, Uint32Array(3) [ 3, 8192, 42 ] ]
+Test21 (Uint32Array): status is "OK"
+
+Test22 (WeakMap):
+  let wm = new WeakMap();
+  let obj = { foo: "I am foo" };
+  wm.set(obj, 42);
+  let src = [1, 2, wm, "bar"];
+  console.log('    src: ', src);
+  let dest = deepCopy(src, options);
+  dest[1] = 3.1416;
+    src:  [ 1, 2, WeakMap { <items unknown> }, 'bar' ]
+    dest: [ 1, 2, WeakMap { <items unknown> }, 'bar' ]
+    dest: [ 1, 2, WeakMap { <items unknown> }, 'bar' ]
+Test22 (WeakMap): status is "Shallow Copy"
+
+Test23 (WeakSet):
+  let ws = new WeakSet();
+    let obj = {value: "in the set"}
+    ws.add(obj);
+    let src = [1, 2, ws, "bar"];
+    let dest = deepCopy(src, options)
+    src:  [ 1, 2, WeakSet { <items unknown> }, 'bar' ]
+    dest: [ 1, 2, WeakSet { <items unknown> }, 'bar' ]
+Test23 (WeakSet): status is "Shallow Copy"
+
+Test24 (enumerable:false):
+  let src = {foo: "this is foo", bar: "this is bar"};
+  Object.defineProperty(src, "foo", {enumerable: false});
+  let dest = deepCopy(src, [object Object]);
+    src:  { bar: 'this is bar' }
+    dest:  { bar: 'this is bar' }
+    dest:  { bar: 'this is bar' }
+Test24 (enumerable:false): status is "OK"
+
+Test25 (custom Array):
+  class ArrayCustom extends Array {
+      custom () {return true;}
+    }
+    let src = [1, 2, ArrayCustom.from(["I", "am", "foo"])];
+    let dest = deepCopy(src, options);
+    src:  [ 1, 2, ArrayCustom(3) [ 'I', 'am', 'foo' ] ]
+    dest: [ 1, 2, ArrayCustom(3) [ 'I', 'am', 'foo' ] ]
+    dest: [ 1, 2, ArrayCustom(3) [ 'WE', 'am', 'foo' ] ]
+Test25 (custom Array): status is "OK"
+
+Test26 (custom Object):
+  class ObjectCustom extends Object {
+    custom () {return true;}
+  }
+  let obj = new ObjectCustom();
+  Object.assign(obj, {foo: "bar"});
+  let src = [1, 2, obj];
+  console.log('    src: ', src);
+  let dest = deepCopy(src, options);
+  dest[2].foo = "FOO_FOO";
+    src:  [ 1, 2, ObjectCustom { foo: 'bar' } ]
+    dest: [ 1, 2, ObjectCustom { foo: 'bar' } ]
+    dest: [ 1, 2, ObjectCustom { foo: 'FOO_FOO' } ]
+Test26 (custom Object): status is "OK"
+
+Test27 (circular Object):
+  const src = { foo: "Foo", bar: {bar: "Bar"}};
+  src.bar.baz = src;
+    src:  <ref *1> { foo: 'Foo', bar: { bar: 'Bar', baz: [Circular *1] } }
+    dest: <ref *1> { foo: 'Foo', bar: { bar: 'Bar', baz: [Circular *1] } }
+
+  dest.foo = "FOO_FOO";
+    src:  <ref *1> { foo: 'Foo', bar: { bar: 'Bar', baz: [Circular *1] } }
+    dest: <ref *1> { foo: 'FOO_FOO', bar: { bar: 'Bar', baz: [Circular *1] } }
+Test27 (circular Object): status is "OK"
+
+
+┌─────────┬─────────────────────┬────────────────┐
+│ (index) │        type         │ deep-copy-all  │
+├─────────┼─────────────────────┼────────────────┤
+│    0    │       'Array'       │      'OK'      │
+│    1    │    'ArrayBuffer'    │      'OK'      │
+│    2    │      'BigInt'       │      'OK'      │
+│    3    │   'BigInt64Array'   │      'OK'      │
+│    4    │  'BigUint64Array'   │      'OK'      │
+│    5    │      'Buffer'       │      'OK'      │
+│    6    │       'Date'        │      'OK'      │
+│    7    │       'Error'       │      'OK'      │
+│    8    │   'Float32Array'    │      'OK'      │
+│    9    │   'Float64Array'    │      'OK'      │
+│   10    │     'Int8Array'     │      'OK'      │
+│   11    │    'Int16Array'     │      'OK'      │
+│   12    │    'Int32Array'     │      'OK'      │
+│   13    │        'Map'        │      'OK'      │
+│   14    │      'Object'       │      'OK'      │
+│   15    │      'RegExp'       │      'OK'      │
+│   16    │        'Set'        │      'OK'      │
+│   17    │    'Uint8Array'     │      'OK'      │
+│   18    │ 'Uint8ClampedArray' │      'OK'      │
+│   19    │    'Uint16Array'    │      'OK'      │
+│   20    │    'Uint32Array'    │      'OK'      │
+│   21    │      'WeakMap'      │ 'Shallow Copy' │
+│   22    │      'WeakSet'      │ 'Shallow Copy' │
+│   23    │ 'enumerable:false'  │      'OK'      │
+│   24    │   'custom Array'    │      'OK'      │
+│   25    │   'custom Object'   │      'OK'      │
+│   26    │  'circular Object'  │      'OK'      │
+└─────────┴─────────────────────┴────────────────┘
+
+errors: []
+All tests complete.
+
+
+Elapsed time: 34 milliseconds

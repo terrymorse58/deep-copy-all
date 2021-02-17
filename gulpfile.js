@@ -2,20 +2,21 @@ const gulp = require("gulp");
 const minify = require("gulp-minify");
 const rename = require("gulp-rename");
 
-const INDEX_FILE = 'index.js';
+const INDEX_FILE = 'deepCopyAll.js';
 const MINIFY_INDEX = 'minifyindex';
 
-const LIB_FILE = 'object-library.js';
+const LIB_FILE = 'dca-library.js';
 const MINIFY_LIB = 'minifylib';
 
-const BROWSER_FILE = 'deep-copy-all.js';
+const BROWSER_FILE = 'index.browser.js';
 const MINIFY_BROWSER = 'minifybrowser';
-const DEST_DIR = './';
+const SRC_DIR = './dist';
+const DEST_DIR = './dist';
 
 // minify INDEX_FILE
 gulp.task(MINIFY_INDEX, () => {
   console.log(`Minifying ${INDEX_FILE}...`);
-  return gulp.src(INDEX_FILE, { allowEmpty: true })
+  return gulp.src(`${SRC_DIR}/${INDEX_FILE}`, { allowEmpty: true })
     .pipe(minify({noSource: true}))
     .pipe(rename(path => {
       path.basename = path.basename.replace(/-min/,'.min');
@@ -27,7 +28,7 @@ gulp.task(MINIFY_INDEX, () => {
 // minify LIB_FILE
 gulp.task(MINIFY_LIB, () => {
   console.log(`Minifying ${LIB_FILE}...`);
-  return gulp.src(LIB_FILE, { allowEmpty: true })
+  return gulp.src(`${SRC_DIR}/${LIB_FILE}`, { allowEmpty: true })
     .pipe(minify({noSource: true}))
     .pipe(rename(path => {
       path.basename = path.basename.replace(/-min/,'.min');
@@ -36,10 +37,10 @@ gulp.task(MINIFY_LIB, () => {
     .pipe(gulp.dest(DEST_DIR))
 });
 
-// minify MINIFY_BROWSER
+// minify BROWSER_FILE
 gulp.task(MINIFY_BROWSER, () => {
   console.log(`Minifying ${BROWSER_FILE}...`);
-  return gulp.src(BROWSER_FILE, { allowEmpty: true })
+  return gulp.src(`${DEST_DIR}/${BROWSER_FILE}`, { allowEmpty: true })
     .pipe(minify({noSource: true}))
     .pipe(rename(path => {
       path.basename = path.basename.replace(/-min/,'.min');

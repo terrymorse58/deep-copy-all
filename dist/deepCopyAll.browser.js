@@ -1,100 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.deepCopy = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-"use strict";
-
-const [ isPrimitive, objectType, objectBehaviors] =
-  require('./object-library.js');
-
-const defaultOpts = {
-  goDeep: true,
-  includeNonEnumerable: false,
-  maxDepth: 20
-};
-
-/**
- * args to copyObject
- * @typedef {Object} CopyArgs
- * @property {Object} destObject
- * @property {string} srcType
- * @property {number} depth
- * @property {Object} options
- */
-
-/**
- * copy source object to destination object recursively
- * @param {[]|{}} srcObject
- * @param {CopyArgs} args
- */
-const copyObject = (srcObject, args) => {
-  let {destObject, srcType, depth, options} = args;
-
-  if (++depth >= options.maxDepth) { return; }
-
-  const srcBehavior = objectBehaviors[srcType];
-  if (!srcBehavior.mayDeepCopy) { return; }
-
-  const addElementToSource = srcBehavior.addElement;
-
-  // iterate over object's elements
-  srcBehavior.iterate(srcObject, options.includeNonEnumerable, (elInfo) => {
-    const elValue = elInfo.value, elType = elInfo.type;
-    let elMayDeepCopy = objectBehaviors[elType].mayDeepCopy;
-
-    let elNew = (elMayDeepCopy)
-      ? objectBehaviors[elType].makeEmpty(elValue)
-      : objectBehaviors[elType].makeShallow(elValue);
-
-    addElementToSource(destObject, elInfo.key, elNew, elInfo.descriptor);
-
-    if (!elMayDeepCopy) { return; }
-
-    copyObject(elValue, { destObject: elNew, srcType: elType,
-      depth: depth, options: options });
-  });
-};
-
-/**
- * return a deep copy of the source
- * @param {Date|[]|{}} source
- * @param {Object} options
- * @param {Boolean=true} options.goDeep - perform deep copy
- * @param {Boolean=false} options.includeNonEnumerable - copy non-enumerables
- * @param {number=20} options.maxDepth - maximum levels of depth
- * @return {*}
- */
-function deepCopy (source, options = defaultOpts) {
-
-  Object.keys(defaultOpts).forEach(optName => {
-    if (typeof options[optName] === 'undefined') {
-      options[optName] = defaultOpts[optName];
-    }
-  });
-
-  // don't copy primitives
-  if (isPrimitive(source)) { return source;}
-
-  // shallow copy option
-  if (!options.goDeep) {
-    return objectBehaviors[objectType(source)].makeShallow(source);
-  }
-
-  const sourceType = objectType(source);
-  const mayDeepCopy = objectBehaviors[sourceType].mayDeepCopy;
-
-  // not deep copyable, do a shallow copy
-  if (!mayDeepCopy) {
-    return objectBehaviors[sourceType].makeShallow(source);
-  }
-
-  // do recursive deep copy
-  let dest = objectBehaviors[sourceType].makeEmpty(source);
-  copyObject(source, {destObject: dest, srcType: sourceType,
-      depth: 0, options: options });
-  return dest;
-}
-
-module.exports = deepCopy;
-
-},{"./object-library.js":2}],2:[function(require,module,exports){
 // object library - specific behaviors for each object type
 
 const objectBehaviors = {};
@@ -418,11 +322,196 @@ addBufferBehavior();
 addObjectBehavior();
 addUnknownAndPrimitive();
 
+/**
+ * object actions as defined in objectBehaviors { }
+ * @typedef {Object} ObjectActions
+ * @property {Boolean} mayDeepCopy
+ * @property {Function} addElement
+ * @property {Function} makeEmpty
+ * @property {Function} makeShallow
+ * @property {Function} iterate
+ */
+/**
+ * return object actions for the named typed
+ * @param {string} typeName
+ * @return {ObjectActions}
+ */
+function objectActions(typeName) {
+  return objectBehaviors[typeName];
+}
+
 module.exports = [
   isPrimitive,
   objectType,
-  objectBehaviors
+  objectActions
 ];
 
-},{}]},{},[1])(1)
+},{}],2:[function(require,module,exports){
+"use strict";
+
+const [ isPrimitive, objectType, objectActions ] =
+  require('./dca-library.js');
+
+/**
+ * copy options for deep-copy-all
+ * @typedef {Object} CopyOptions
+ * @property {boolean} goDeep
+ * @property {boolean} includeNonEnumerable
+ * @property {boolean} detectCircular
+ * @property {number} maxDepth
+ */
+
+/**
+ * args for copyObjectContents()
+ * @typedef {Object} CopyArgs
+ * @property {Object} destObject
+ * @property {string} srcType
+ * @property {Watcher} watcher
+ * @property {CopyOptions|Object} options
+ */
+
+
+/** @type {CopyOptions} **/
+const defaultOpts = {
+  goDeep: true,
+  includeNonEnumerable: false,
+  detectCircular: true,
+  maxDepth: 20
+};
+function setMissingOptions(options) {
+  Object.keys(defaultOpts).forEach(optName => {
+    if (typeof options[optName] === 'undefined') {
+      options[optName] = defaultOpts[optName];
+    }
+  });
+}
+
+// watch for circular references
+class Watcher {
+  constructor () {
+    this._seenMap = new WeakMap();
+  }
+
+  setAsCopied(obj, copy) {
+    if (!(obj instanceof Object)) {return;}
+    this._seenMap.set(obj, copy);
+  }
+
+  wasCopied(obj) {
+    if (!(obj instanceof Object)) { return false; }
+    return this._seenMap.has(obj);
+  }
+
+  getCopy(obj) {
+    return this._seenMap.get(obj);
+  }
+}
+
+/**
+ * make copy of element
+ * @param {Object} element
+ * @param {ObjectActions} elActions
+ * @param {Object} args
+ * @param {CopyOptions|Object} args.options
+ * @param {Watcher} args.watcher
+ * @return {*}
+ */
+function copyElement(element, elActions,
+  args) {
+  const {options, watcher} = args;
+  let copy;
+  if (elActions.mayDeepCopy) {
+    copy = elActions.makeEmpty(element);
+    if (options.detectCircular) {watcher.setAsCopied(element, copy);}
+  } else {
+    copy = elActions.makeShallow(element);
+  }
+  return copy;
+}
+
+function checkForExceededDepth(depth, maxDepth) {
+  if (depth >= maxDepth) {
+    // console.log('copyObjectContents max depth exceeded srcObject:',srcObject);
+    throw `Error max depth of ${maxDepth} levels exceeded, possible circular reference`;
+  }
+}
+
+
+/**
+ * copy source object contents to destination object (recursive)
+ * @param {[]|{}} srcObject
+ * @param {CopyArgs} args
+ * @param {number} depth
+ */
+const copyObjectContents = (srcObject, args, depth) => {
+  const {destObject, srcType, watcher, options} = args;
+  const detectCircular = options.detectCircular;
+
+  checkForExceededDepth(++depth, options.maxDepth);
+
+  const objActions = objectActions(srcType);
+  if (!objActions.mayDeepCopy) { return; }
+
+  const addElementToObject = objActions.addElement;
+
+  // iterate over source object's elements
+  objActions.iterate(srcObject, options.includeNonEnumerable, (elInfo) => {
+    const elValue = elInfo.value, elType = elInfo.type,
+      elActions = objectActions(elType);
+    let elSeenBefore = false, elCopy;
+
+    // create copy of source element
+    if (detectCircular && watcher.wasCopied(elValue)) {
+      // console.log('copyObjectContents was seen, using reference elValue:',
+      // elValue);
+      elCopy = watcher.getCopy(elValue);
+      elSeenBefore = true;
+    } else {
+      elCopy = copyElement(elValue, elActions, {options, watcher});
+    }
+
+    addElementToObject(destObject, elInfo.key, elCopy, elInfo.descriptor);
+
+    if (!elActions.mayDeepCopy || elSeenBefore) { return; }
+
+    copyObjectContents(elValue,
+      { destObject: elCopy, srcType: elType, watcher, options }, depth);
+  });
+};
+
+/**
+ * return deep copy of the source
+ * @param {Date|[]|{}} source
+ * @param {CopyOptions} options
+ * @return {*}
+ */
+function deepCopy (source, options = defaultOpts) {
+  setMissingOptions(options);
+
+  // don't deep copy primitives
+  if (isPrimitive(source)) { return source;}
+
+  const srcType = objectType(source);
+  const srcActions = objectActions(srcType);
+
+  if (!options.goDeep || !srcActions.mayDeepCopy) {
+    return srcActions.makeShallow(source);
+  }
+
+  // create watcher for circular references
+  const watcher = (options.detectCircular) ? new Watcher() : null;
+
+  // recursive copy: make empty object to be filled by copyObjectContents
+  let destObject = srcActions.makeEmpty(source);
+
+  if (options.detectCircular) { watcher.setAsCopied(source, destObject); }
+
+  // copy contents of source object to destination object
+  copyObjectContents(source, { destObject, srcType, watcher, options }, 0);
+  return destObject;
+}
+
+module.exports = deepCopy;
+
+},{"./dca-library.js":1}]},{},[2])(2)
 });

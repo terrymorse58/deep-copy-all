@@ -33,10 +33,10 @@ copy = deepCopy(source);
 ````
 HTML file:
 ```html
-<script src="deep-copy-all.min.js"></script>
+<script src="dist/deepCopyAll.browser.js"></script>
 <script>
   /* ... */
-  copy = deepCopy(source);
+  let copy = deepCopy(source);
 </script>
 ```
 ---

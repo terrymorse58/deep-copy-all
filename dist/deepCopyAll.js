@@ -1,7 +1,7 @@
 "use strict";
 
 const [ isPrimitive, objectType, objectActions ] =
-  require('./object-library.js');
+  require('./dca-library.js');
 
 /**
  * copy options for deep-copy-all
@@ -113,7 +113,8 @@ const copyObjectContents = (srcObject, args, depth) => {
 
     // create copy of source element
     if (detectCircular && watcher.wasCopied(elValue)) {
-      // console.log('copyObjectContents was seen, using reference elValue:', elValue);
+      // console.log('copyObjectContents was seen, using reference elValue:',
+      // elValue);
       elCopy = watcher.getCopy(elValue);
       elSeenBefore = true;
     } else {

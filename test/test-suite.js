@@ -742,8 +742,7 @@ function testSuite (copierName, deepCopy, options) {
   newTest('circular Object', () => {
     console.log(
       '  const src = { foo: "Foo", bar: {bar: "Bar"}};\n' +
-      '  src.bar.baz = src;\n' +
-      '  dest.foo = "FOO_FOO";'
+      '  src.bar.baz = src;'
     );
     try {
       const src = { foo: "Foo", bar: {bar: "Bar"}};
@@ -755,10 +754,16 @@ function testSuite (copierName, deepCopy, options) {
         || dest.foo !== src.foo) {
         return postLoss();
       }
+      console.log('\n  dest.foo = "FOO_FOO";');
       dest.foo = "FOO_FOO";
+      console.log('    src: ', src);
       console.log('    dest:', dest);
       if (dest.foo === src.foo) {
         return postShallow();
+      }
+      // check for not circular
+      if (dest.bar.baz !== dest) {
+        throw 'circular reference is not circular';
       }
       postOK();
     }  catch (err) { logErr(err, iTest, name); }  });
